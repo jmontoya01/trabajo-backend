@@ -1,0 +1,61 @@
+h1 {
+    color:red; 
+    text-align: center;
+}
+
+#containerProducts{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+
+.card {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid #ccc;
+    border-radius: 2px;
+    margin: 10px;
+    padding: 10px;
+    width: 200px;
+    border-radius: 8px;
+}
+
+.btnEliminar{
+    width: 100px;
+    border-radius: 5px;
+    text-align: center;
+}
+
+.btnEliminar:hover{
+    background-color: aquamarine;
+}
+
+.form{
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.h2Titulo{
+    text-align: center;
+}
+
+.chatBox{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#chatBox{
+    border-radius: 5PX;
+}
+
+.messagesLogs{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

@@ -1,0 +1,57 @@
+[
+  {
+    "id": 4,
+    "title": "World of warcraft",
+    "description": "Ultima parche implementado",
+    "price": 210,
+    "img": "imagen de portada ultimo parche",
+    "code": "0004",
+    "stock": 250,
+    "status": true,
+    "thumbnails": []
+  },
+  {
+    "id": 5,
+    "title": "League of Legends",
+    "description": "Ultima actualización de temporada",
+    "price": 10,
+    "img": "imagen de nuevo campeon",
+    "code": "0005",
+    "stock": 10,
+    "status": true,
+    "thumbnails": []
+  },
+  {
+    "id": 7,
+    "title": "Resident Evil 4 Remake ",
+    "description": "Remake del exitoso juego",
+    "price": 150,
+    "img": "imagen de Leon",
+    "code": "0007",
+    "stock": 98,
+    "status": true,
+    "thumbnails": []
+  },
+  {
+    "id": 8,
+    "title": "Cookie Cutter",
+    "description": "Un nuevo metroidvania con un apartado gráfico muy llamativo de dibujos animados",
+    "price": 130,
+    "img": "imagen de portada",
+    "code": "0008",
+    "stock": 80,
+    "status": true,
+    "thumbnails": []
+  },
+  {
+    "id": 9,
+    "title": "Paranoid",
+    "description": "Paranoid es una aventura de terror desarrollada por Madmind Studio",
+    "price": 220,
+    "img": "imagen de portada",
+    "code": "0009",
+    "stock": 210,
+    "status": true,
+    "thumbnails": []
+  }
+]
