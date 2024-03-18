@@ -8,6 +8,7 @@ const ProductManager = require("./controllers/product-manager.js");
 const productManager = new ProductManager("./src/models/products.json");
 const app = express();
 const PUERTO = 8080;
+require("./database.js");
 
 //Middlewares
 app.use(express.urlencoded({extended:true}));
