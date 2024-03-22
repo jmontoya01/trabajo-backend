@@ -1,10 +1,20 @@
-h1 {
-    color:red; 
-    text-align: center;
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+body{
+    background-color: #999393fb;
 }
 
-#containerProducts{
+h1 {
+    color:red; 
+
+}
+
+.products__containter{
     display: flex;
+    flex-direction: row;
     justify-content: center;
     align-items: center;
     flex-wrap: wrap;
@@ -24,38 +34,200 @@ h1 {
     border-radius: 8px;
 }
 
-.btnEliminar{
+/* .btnEliminar{
     width: 100px;
     border-radius: 5px;
     text-align: center;
-}
+} */
 
-.btnEliminar:hover{
+/* .btnEliminar:hover{
     background-color: aquamarine;
-}
+} */
 
 .form{
     display: flex;
+    width: 20vw;
+    flex-direction: column;
     justify-content: center;
+    align-items: center;
     gap: 10px;
+    border-radius: 10px;
 }
 
-.h2Titulo{
+
+.btnRegister{
+    text-decoration: none;
+    color: black;
+    border: 1px black solid
+}
+
+.btnRegister:hover{
+    background-color: brown;
+color: aliceblue;
+}
+
+.card {
+    display: inline-block;
+    width: 300px;
+    margin: 10px;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    background-color: #fff;
+}
+
+.card img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.card h3 {
+    font-size: 0.8rem;
+    font-weight: bold;
+    margin: 10px;
+}
+
+.card p {
+    font-size: 0.7;
+    margin: 10px;
+    color: #777;
+}
+
+/*Button*/
+.btn{
+    text-align: center;
+    display: inline-block;
+    justify-content: center;
+    padding: 8px 16px;
+    background-color: #c4001a;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: pointer;
+    margin: 10px;
+    text-decoration: none;
+}
+
+.btn__register{
+    text-align: center;
+    display: inline-block;
+    justify-content: center;
+    padding: 8px 16px;
+    background-color: #c4001a;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: pointer;
+    margin: 10px;
+    text-decoration: none;
+}
+
+#password, #email, #age, #last_name, #first_name{
+    border-radius: 5px;
+    font-size: 1.5rem;
+}
+
+
+.btn__register:hover{
+    background-color: black;
+}
+
+button{
+    background-color: #c4001a;
+    border: none;
+    text-decoration: none;
+    color: #fff;
+}
+
+button:hover{
+    background-color: #c4001a;
+}
+
+.btn__login{
+    text-align: center;
+    display: inline-block;
+    justify-content: center;
+    padding: 8px 16px;
+    background-color: #c4001a;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: pointer;
+    margin: 10px;
+    text-decoration: none;
+}
+
+.btn__login:hover{
+    background-color: black;
+}
+
+
+
+.btn:hover {
+    background-color: black;
+}
+
+.container__perfil{
+display: flex;
+flex-direction: column;
+justify-content: center;
+align-items: center;
+text-align: center;
+gap: 10px;
+margin-bottom: 20px;
+}
+
+
+header {
+    background-color: #e60023;
+    color: white;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content:space-around;
+    margin-bottom: 50px;
+}
+
+.logo__user {
+    font-size: 2rem;
+    text-decoration: none;
+    color: white;
+}
+
+.profile__li{
+    text-decoration: none;
+    color: white;
+    font-size: 1rem;
+}
+
+nav ul {
+    list-style: none;
+}
+
+.container__login{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.container__login__input{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    border-radius: 6px;
+    background-color: #f2f2f2;
+}
+
+.h1__login{
     text-align: center;
 }
 
-.chatBox{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-#chatBox{
-    border-radius: 5PX;
-}
-
-.messagesLogs{
-    display: flex;
-    align-items: center;
-    justify-content: center;
+.h2__products{
+    text-align: center;
 }

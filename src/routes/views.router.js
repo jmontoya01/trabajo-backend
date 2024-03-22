@@ -5,21 +5,44 @@ const CartManager = require("../controllers/cart-manager.js");
 const productManager = new ProductManager();
 const cartManager = new CartManager();
 
-router.get("/products", async (req, res) => {
+
+
+router.get("/login", (req, res) => {
+    if (req.session.login) {
+        return res.redirect("/profile"); //con .redirect redirigimos a la ruta especificada
+    }
+    res.render("login");
+});
+
+
+router.get("/register", (req, res) => {
+    if (req.session.login) {
+        return res.redirect("/profile");
+    }
+    res.render("register");
+});
+
+
+router.get("/profile", async (req, res) => {
+    if (!req.session.login) {
+        return res.redirect("/login")
+    };
+    // res.render("profile", { user: req.session.user });
     try {
-        const {page = 1, limit = 2} = req.query;
+        const { page = 1, limit = 2 } = req.query;
         const products = await productManager.getProducts({
             page: parseInt(page),
             limit: parseInt(limit)
         });
 
         const newArray = products.docs.map(product => {
-            const {_id, ...rest} = product.toObject();
+            const { _id, ...rest } = product.toObject();
             return rest;
         });
 
 
-        res.render("products", {
+        res.render("profile", {
+            user: req.session.user,
             products: newArray,
             hasPrevPage: products.hasPrevPage,
             hasNextPage: products.hasNextPage,
@@ -28,12 +51,16 @@ router.get("/products", async (req, res) => {
             currentPage: products.page,
             totalPages: products.totalPages
         });
-        
+
     } catch (error) {
         console.error("Error al obtener productos", error);
-        res.status(500).json({status: "error", error: "Error interno del servidor"});
+        res.status(500).json({ status: "error", error: "Error interno del servidor" });
     };
 });
+
+// router.get("/products", async (req, res) => {
+    
+// });
 
 router.get("/carts/:cid", async (req, res) => {
     const cartId = req.params.cid;
@@ -43,7 +70,7 @@ router.get("/carts/:cid", async (req, res) => {
 
         if (!cart) {
             console.log("No existe el carrito con el id ingresado");
-            return res.status(404).json({error: "El recurso solicitado no se pudo encontrar"})
+            return res.status(404).json({ error: "El recurso solicitado no se pudo encontrar" })
         };
 
         const productsInCart = cart.products.map(item => ({
@@ -51,10 +78,10 @@ router.get("/carts/:cid", async (req, res) => {
             quantity: item.quantity
         }));
 
-        res.render("carts", {products: productsInCart});
+        res.render("carts", { products: productsInCart });
     } catch (error) {
         console.error("Error al obtener el carrito", error);
-        res.status(500).json({status: "error", error: "Error interno del servidor"});
+        res.status(500).json({ status: "error", error: "Error interno del servidor" });
     }
 });
 

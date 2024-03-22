@@ -1,4 +1,3 @@
-// const fs = require("fs").promises
 const cartModel = require("../models/cart.model.js");
 
 class CartManager {

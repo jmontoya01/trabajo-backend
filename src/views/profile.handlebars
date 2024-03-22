@@ -1,0 +1,33 @@
+<div class="container__perfil">
+    <h1>Mi Perfil</h1>
+    <p>Bienvenido!!</p>
+    <p>Nombre: {{user.first_name}} {{user.last_name}} </p>
+    <p>Email: {{user.email}}</p>
+    <p>Edad: {{user.age}}</p>
+    <p>usuario: {{user.role}}</p>
+    <a href="/api/sessions/logout">Logout</a> {{!--en href ponemos la ruta a la que queremos que vaya, en este caso la
+    ruta para desloguear--}}
+</div>
+
+<h2 class="h2__products"> Productos </h2>
+<div class="products__containter">
+    {{#each products}}
+    <div class="card">
+        <h2>{{title}}</h2>
+        <p>{{description}}</p>
+        <p>Price: ${{price}}</p>
+        <p>Category: {{category}} </p>
+        <button class="btn"> Agregar al Carrito </button>
+    </div>
+    {{/each}}
+</div>
+
+
+{{#if hasNextPage}}
+<a href="/profile?page={{nextPage}}"> Siguiente </a>
+{{/if}}
+{{#if hasPrevPage}}
+<a href="/profile?page={{prevPage}}"> Anterior </a>
+{{/if}}
+
+<p>Pagina {{currentPage}} de {{totalPages}} </p>
