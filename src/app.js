@@ -33,10 +33,10 @@ app.use(session ({
     })
 }));
 
-//passport
-// initializePassport();
-// app.use(passport.initialize());
-// app.use(passport.session());
+//passport..
+initializePassport();
+app.use(passport.initialize());
+app.use(passport.session());
 
 //handlebars
 app.engine("handlebars", exphbs.engine());
