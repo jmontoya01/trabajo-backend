@@ -123,6 +123,7 @@ color: aliceblue;
     cursor: pointer;
     margin: 10px;
     text-decoration: none;
+    cursor: pointer;
 }
 
 #password, #email, #age, #last_name, #first_name{

@@ -29,7 +29,7 @@ app.use(session ({
 
     store: MongoStore.create({
         mongoUrl:"mongodb+srv://jeffquetas:jeff1302@cluster0.zqiftye.mongodb.net/proyecto-backend?retryWrites=true&w=majority",
-        ttl: 100
+        ttl: 100//ttl: expires basado en ttl y se encarga de limpiar autamaticamente una vez q pase el tiempo de expires
     })
 }));
 
