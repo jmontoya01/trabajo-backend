@@ -1,8 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const ProductManager = require("../controllers/product-manager.js");
-const CartManager = require("../controllers/cart-manager.js");
 const productManager = new ProductManager();
+const CartManager = require("../controllers/cart-manager.js");
 const cartManager = new CartManager();
 
 
@@ -84,5 +84,33 @@ router.get("/carts/:cid", async (req, res) => {
         res.status(500).json({ status: "error", error: "Error interno del servidor" });
     }
 });
+
+//volviendo a implementar socket io()
+router.get("/", async (req, res) => {
+    try {
+        const products = await productManager.getProducts();
+        res.render("index", {products: products, user: req.session.user});
+    } catch (error) {
+        res.status(500).json({error: "Error interno del servidor"});
+    }
+});
+
+router.get("/realtimeproducts", async (req, res) => {
+    try {
+        res.render("realtimeproducts");
+    } catch (error) {
+        res.status(500).json({
+            error: "Error interno del servidor"
+        });
+    }
+});
+
+router.get("/chat", async (req, res) => {
+    try {
+        res.render("chat");
+    } catch (error) {
+        res.status(500).json({error: "Error interno del servidor"});
+    }
+})
 
 module.exports = router;

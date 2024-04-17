@@ -6,12 +6,14 @@ const productsRouter = require("./routes/products.router.js");
 const cartsRouter = require("./routes/carts.router.js");
 const viewsRouter = require("./routes/views.router.js");
 const userRouter = require("./routes/user.router.js");
+const socket = require("socket.io");
 const sessionRouter = require("./routes/session.router.js");
 const ProductManager = require("./controllers/product-manager.js");
 const productManager = new ProductManager("./src/models/products.json");
 const initializePassport = require("./config/passport.config.js");
 const passport = require("passport");
 const cookieParser = require("cookie-parser");
+
 
 const app = express();
 const PUERTO = 8080;
@@ -51,10 +53,36 @@ app.use("/api/users", userRouter);
 app.use("/", viewsRouter);
 
 
-//listen
-app.listen(PUERTO, () => {
+//socket.io
+const messageModel = require("./models/messages.model.js");
+const hhtpServer = app.listen(PUERTO, () => {
     console.log(`Escuchando en puerto: ${PUERTO}`);
 });
+
+const io = socket(hhtpServer);
+
+io.on("connection", async (socket) => {
+    console.log("Un cliente se conecto");
+
+    socket.emit("products", await productManager.getProducts());
+
+    socket.on("messages", async data => {
+        await messageModel.create(data)
+        const messages = await messageModel.find()
+        io.sockets.emit("messages", messages)
+    })
+
+    socket.on("deleteProduct", async (id) => {
+        await productManager.deleteProduct(id);
+        io.socket.emit("products", await productManager.getProducts());
+    });
+
+    socket.on("addProduct", async (product) => {
+        await productManager.addProduct(product);
+        io.sockets.emit("products", await productManager.getProducts());
+    });
+});
+
 
 
 

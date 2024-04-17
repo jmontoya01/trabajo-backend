@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 
 const ProductManager = require("../controllers/product-manager.js");
+const productModel = require("../models/product.model.js");
 const productManager = new ProductManager();
 
 
@@ -19,7 +20,7 @@ router.get("/", async (req, res) => {
         });
         res.json({
             status: "success",
-            payload: "products",
+            payload: products,
             totalPages: products.totalPages,
             prevPage: products.prevPage,
             nextPage: products.nextPage,
@@ -42,7 +43,7 @@ router.get("/:pid", async (req, res) => {
     try {
         const product = await productManager.getProductById(id);
         if (!product) {
-            return res.json({error: "Producto no encontrado"});
+            return res.status(404).send({error: "Producto no encontrado"});
         } 
         res.json(product);
 
@@ -55,9 +56,20 @@ router.get("/:pid", async (req, res) => {
 //add new product
 router.post("/", async (req, res) => {
     const newProduct = req.body;
+    const {title, description, price, code, stock, category} = newProduct;
     try {
-        await productManager.addProduct(newProduct);
-        res.status(201).json({message: " La solicitud ha tenido éxito y se ha creado un nuevo recurso como resultado"});
+        if (!title || !description || !price ||!code ||!stock || !category) {
+            res.status(400).send({message: "Todos los campos son obligatorios"});
+            return
+        };
+        const product = await productModel.findOne({code: code});
+        if (product) {
+            res.status(400).send({ message: "El valor de ese code ya existe y no puede repetirse, ingrese otro code"})
+        } else {
+            await productManager.addProduct(newProduct);
+            res.status(201).json({message: "Producto agregado exitosamente"});
+        }
+        
     } catch (error) {
         console.error("Error al crear el producto", error);
         res.status(500).json({status: "error", error: "Error interno del servidor"});
@@ -70,8 +82,12 @@ router.put("/:pid", async (req, res) => {
     const updateProduct = req.body;
 
     try {
-        await productManager.updateProduct(productId, updateProduct);
-        res.status(200).json({message: "La solicitud ha tenido éxito y se ha actualizado el recurso como resultado"})
+        const productUpdate = await productManager.updateProduct(productId, updateProduct);
+        if (!productUpdate) {
+            res.status(404).send({message: "El producto que desea actualizar no existe en la base de datos"});
+        } else {
+            res.status(200).json({message: "La solicitud ha tenido éxito y se ha actualizado el recurso como resultado"});
+        }
     } catch (error) {
         console.error("Error al actualizar el producto con el id", error);
         res.status(500).json({status: "error", error: "Error interno del servidor"});

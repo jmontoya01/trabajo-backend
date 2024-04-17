@@ -16,17 +16,23 @@ class CartManager {
         try {
             const cart = await cartModel.findById(cartId);
             !cart ? console.log("No existe ese carrito con el id") : cart;
+            return cart;
         } catch (error) {
             console.log("Error al traer el carrito con el id", error);
         };
     };
 
-    async addProducToCart(cartId, productId, quantity = 1) {
+    async addProductToCart(cartId, productId, quantity = 1) {
         try {
             const cart = await this.getCartById(cartId);
-            const existProduct = cart.products.find(item => item.product.toString() === productId);
-
-            existProduct ? existProduct.quantity += quantity : cart.products.push({ product: productId, quantity });
+            const existProduct = cart.products.findIndex(item => item.product.equals(productId));//En muchos lenguajes de programación, el método equals() se usa para comparar dos objetos para verificar si son iguales en términos de sus contenidos.
+            
+            if (existProduct >= 0) {
+                cart.products[existProduct].quantity += quantity;
+            } else {
+                cart.products.push({product: productId, quantity})
+            }
+        
             cart.markModified("products");//marcamos la propiedad products como modificada antes de guardar
             await cart.save();
             return cart;
@@ -36,13 +42,15 @@ class CartManager {
         };
     };
 
-    async deleteProductToCart(cartId, productId) {
+    async deleteProductFromCart(cartId, productId) {
         try {
             const cart = await cartModel.findById(cartId);
             if (!cart) {
                 throw new Error("Carrito no encontrado");
             }
-
+            cart.products = cart.products.filter(item => item.product._id.toString() !== productId);//metodo filter comparamos los valores para que solo incluya aquellos productos cuyo _id no coincide con el productId 
+            await cart.save();
+            return cart;
         } catch (error) {
             console.error("Error al eliminar el producto del carrito", error);
             throw error;

@@ -7,8 +7,9 @@ body{
     background-color: #999393fb;
 }
 
-h1 {
-    color:red; 
+h1, h2 {
+    color:black; 
+    text-align: center;
 
 }
 
@@ -20,6 +21,14 @@ h1 {
     flex-wrap: wrap;
 }
 
+.cardContainer{
+display: flex;
+flex-direction: column;
+justify-content: center;
+align-items: center;
+text-align: center;
+
+}
 
 .card {
     display: flex;
@@ -44,6 +53,12 @@ h1 {
     background-color: aquamarine;
 } */
 
+.container__form{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 .form{
     display: flex;
     width: 20vw;
@@ -54,6 +69,9 @@ h1 {
     border-radius: 10px;
 }
 
+#containerProducts{
+    text-align: center;
+}
 
 .btnRegister{
     text-decoration: none;
@@ -86,12 +104,13 @@ color: aliceblue;
     font-size: 0.8rem;
     font-weight: bold;
     margin: 10px;
+    text-align: center;
 }
 
 .card p {
     font-size: 0.7;
     margin: 10px;
-    color: #777;
+    color: black;
 }
 
 /*Button*/

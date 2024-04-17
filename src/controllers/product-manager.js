@@ -5,18 +5,7 @@ class ProductManager {
     async addProduct({ title, description, price, code, stock, category, thumbnails }) {
 
         try {
-            if (!title || !description || !price || !code || !stock || !category) {
-                console.log("Todos los campos son hobligatorios para continuar ");
-                return;
-            };
-
-            const existProduct = await productModel.findOne({ code: code });
-
-            if (existProduct) {
-                console.log("El codigo tiene que ser unico");
-                return;
-            };
-
+            
             const newProduct = new productModel({
                 title,
                 description,
