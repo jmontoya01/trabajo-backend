@@ -13,10 +13,11 @@ const productManager = new ProductManager("./src/models/products.json");
 const initializePassport = require("./config/passport.config.js");
 const passport = require("passport");
 const cookieParser = require("cookie-parser");
-
+const cors = require("cors");
+const configObject = require("./config/config.js")
+const {port} = configObject;
 
 const app = express();
-const PUERTO = 8080;
 require("./database.js");
 
 //Middlewares
@@ -24,6 +25,7 @@ app.use(express.urlencoded({extended:true}));
 app.use(express.json());
 app.use(express.static("./src/public"));
 app.use(cookieParser());
+app.use(cors());
 app.use(session ({
     secret: "secretCoder",
     resave: true,
@@ -55,8 +57,8 @@ app.use("/", viewsRouter);
 
 //socket.io
 const messageModel = require("./models/messages.model.js");
-const hhtpServer = app.listen(PUERTO, () => {
-    console.log(`Escuchando en puerto: ${PUERTO}`);
+const hhtpServer = app.listen(port, () => {
+    console.log(`Escuchando en puerto: ${port}`);
 });
 
 const io = socket(hhtpServer);

@@ -4,6 +4,7 @@ const ProductManager = require("../controllers/product-manager.js");
 const productManager = new ProductManager();
 const CartManager = require("../controllers/cart-manager.js");
 const cartManager = new CartManager();
+const response = require("../utils/reusables.js");
 
 
 
@@ -54,7 +55,8 @@ router.get("/profile", async (req, res) => {
 
     } catch (error) {
         console.error("Error al obtener productos", error);
-        res.status(500).json({ status: "error", error: "Error interno del servidor" });
+        response(res, 500, "Error interno del servidor");
+        // res.status(500).json({ status: "error", error: "Error interno del servidor" });
     };
 });
 
@@ -70,7 +72,8 @@ router.get("/carts/:cid", async (req, res) => {
 
         if (!cart) {
             console.log("No existe el carrito con el id ingresado");
-            return res.status(404).json({ error: "El recurso solicitado no se pudo encontrar" })
+            return response(res, 404, "El recurso solicitado no se pudo encontrar");
+            // return res.status(404).json({ error: "El recurso solicitado no se pudo encontrar" })
         };
 
         const productsInCart = cart.products.map(item => ({
@@ -81,7 +84,8 @@ router.get("/carts/:cid", async (req, res) => {
         res.render("carts", { products: productsInCart });
     } catch (error) {
         console.error("Error al obtener el carrito", error);
-        res.status(500).json({ status: "error", error: "Error interno del servidor" });
+        response(res, 500, "Error interno del servidor");
+        // res.status(500).json({ status: "error", error: "Error interno del servidor" });
     }
 });
 
@@ -91,7 +95,8 @@ router.get("/", async (req, res) => {
         const products = await productManager.getProducts();
         res.render("index", {products: products, user: req.session.user});
     } catch (error) {
-        res.status(500).json({error: "Error interno del servidor"});
+        response(res, 500, "Error interno del servidor");
+        // res.status(500).json({error: "Error interno del servidor"});
     }
 });
 
@@ -99,9 +104,8 @@ router.get("/realtimeproducts", async (req, res) => {
     try {
         res.render("realtimeproducts");
     } catch (error) {
-        res.status(500).json({
-            error: "Error interno del servidor"
-        });
+        response(res, 500, "Error interno del servidor");
+        // res.status(500).json({error: "Error interno del servidor"});
     }
 });
 
@@ -109,7 +113,8 @@ router.get("/chat", async (req, res) => {
     try {
         res.render("chat");
     } catch (error) {
-        res.status(500).json({error: "Error interno del servidor"});
+        response(res, 500, "Error interno del servidor");
+        // res.status(500).json({error: "Error interno del servidor"});
     }
 })
 

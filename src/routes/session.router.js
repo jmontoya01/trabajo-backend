@@ -3,6 +3,7 @@ const router = express.Router();
 const userModel = require("../models/user.model.js");
 const { isValidPassword } = require("../utils/hashBcrypt.js");
 const passport = require("passport");
+const response = require("../utils/reusables.js");
 
 router.post("/login", async (req, res) => {
     const { email, password } = req.body;
@@ -23,14 +24,17 @@ router.post("/login", async (req, res) => {
 
                 res.redirect("/profile");
             } else {
-                res.status(401).send({ error: "Contraseña no valida" });
+                response(res, 401, "Contraseña no valida");
+                // res.status(401).send({ error: "Contraseña no valida" });
             }
         } else {
-            res.status(404).send({ error: "Usuario no encontrado" });
+            response(res, 404, "Usuario no encontrado");
+            // res.status(404).send({ error: "Usuario no encontrado" });
         }
 
     } catch (error) {
-        res.status(400).send({ error: "Error en el login" });
+        response(res, 400, "Error en el login");
+        // res.status(400).send({ error: "Error en el login" });
     }
 })
 

@@ -4,6 +4,7 @@ const router = express.Router();
 const ProductManager = require("../controllers/product-manager.js");
 const productModel = require("../models/product.model.js");
 const productManager = new ProductManager();
+const response = require("../utils/reusables.js");
 
 
 //rutas
@@ -32,7 +33,8 @@ router.get("/", async (req, res) => {
         })
     } catch (error) {
         console.error("Error al obtener productos", error);
-        res.status(500).json({status: "error", error: "Error interno del servidor"});
+        response(res, 500, "Error interno del servidor");
+        // res.status(500).json({status: "error", error: "Error interno del servidor"});
     }
 });
 
@@ -43,13 +45,15 @@ router.get("/:pid", async (req, res) => {
     try {
         const product = await productManager.getProductById(id);
         if (!product) {
-            return res.status(404).send({error: "Producto no encontrado"});
+            return response(res, 404, "Producto no encontrado");
+            // return res.status(404).send({error: "Producto no encontrado"});
         } 
         res.json(product);
 
     } catch (error) {
         console.error("Error al obtener el producto con el id", error);
-        res.status(500).json({status: "error", error: "Error interno del servidor"});
+        response(res, 500, "Error interno del servidor");
+        // res.status(500).json({status: "error", error: "Error interno del servidor"});
     }
 });
 
@@ -59,20 +63,24 @@ router.post("/", async (req, res) => {
     const {title, description, price, code, stock, category} = newProduct;
     try {
         if (!title || !description || !price ||!code ||!stock || !category) {
-            res.status(400).send({message: "Todos los campos son obligatorios"});
+            response(res, 400, "Todos los campos son obligatorios");
+            // res.status(400).send({message: "Todos los campos son obligatorios"});
             return
         };
         const product = await productModel.findOne({code: code});
         if (product) {
-            res.status(400).send({ message: "El valor de ese code ya existe y no puede repetirse, ingrese otro code"})
+            response(res, 400, "El valor de ese code ya existe y no puede repetirse, ingrese otro code");
+            // res.status(400).send({ message: "El valor de ese code ya existe y no puede repetirse, ingrese otro code"})
         } else {
             await productManager.addProduct(newProduct);
-            res.status(201).json({message: "Producto agregado exitosamente"});
+            response(res, 201, "Producto agregado exitosamente");
+            // res.status(201).json({message: "Producto agregado exitosamente"});
         }
         
     } catch (error) {
         console.error("Error al crear el producto", error);
-        res.status(500).json({status: "error", error: "Error interno del servidor"});
+        response(res, 500, "Error interno del servidor");
+        // res.status(500).json({status: "error", error: "Error interno del servidor"});
     };
 });
 
@@ -84,13 +92,16 @@ router.put("/:pid", async (req, res) => {
     try {
         const productUpdate = await productManager.updateProduct(productId, updateProduct);
         if (!productUpdate) {
-            res.status(404).send({message: "El producto que desea actualizar no existe en la base de datos"});
+            response(res, 404, "El producto que desea actualizar no existe en la base de datos");
+            // res.status(404).send({message: "El producto que desea actualizar no existe en la base de datos"});
         } else {
-            res.status(200).json({message: "La solicitud ha tenido éxito y se ha actualizado el recurso como resultado"});
+            response(res, 200, "La solicitud ha tenido éxito y se ha actualizado el recurso como resultado");
+            // res.status(200).json({message: "La solicitud ha tenido éxito y se ha actualizado el recurso como resultado"});
         }
     } catch (error) {
         console.error("Error al actualizar el producto con el id", error);
-        res.status(500).json({status: "error", error: "Error interno del servidor"});
+        response(res, 500, "Error interno del servidor");
+        // res.status(500).json({status: "error", error: "Error interno del servidor"});
     };
 });
 
@@ -100,10 +111,12 @@ router.delete("/:pid", async (req, res) => {
 
     try {
         await productManager.deleteProduct(productId);
-        res.status(200).json({message: "La solicitud ha tenido éxito y se ha eliminado el recurso como resultado"});
+        response(res, 200, "La solicitud ha tenido éxito y se ha eliminado el recurso como resultado")
+        // res.status(200).json({message: "La solicitud ha tenido éxito y se ha eliminado el recurso como resultado"});
     } catch (error) {
         console.error("Error al eliminar el producto", error);
-        res.status(500).json({status: "error", error: "Error interno del servidor"});
+        response(res, 500, "Error interno del servidor");
+        // res.status(500).json({status: "error", error: "Error interno del servidor"}); Fede cual cree q es mejor de estos dos: el de arriba o este???
     };
 })
 
