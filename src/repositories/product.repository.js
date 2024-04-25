@@ -1,11 +1,22 @@
 const productModel = require("../models/product.model.js");
 
-class ProductManager {
-
+class ProductRepository {
     async addProduct({ title, description, price, code, stock, category, thumbnails }) {
 
         try {
-            
+
+            if (!title || !description || !price || !code || !stock || !category) {
+                console.log("Todos los campos son obligatorios para continuar");
+                return;
+            }
+
+            const existProduct = await productModel.findOne({ code: code });
+
+            if (existProduct) {
+                console.log("El valor de ese code ya existe y no puede repetirse, ingrese otro code")
+                return;
+            }
+
             const newProduct = new productModel({
                 title,
                 description,
@@ -18,15 +29,13 @@ class ProductManager {
             });
 
             await newProduct.save();
+            return newProduct;
 
         } catch (error) {
             console.log("Error al agregar producto", error);
-            throw new Error("Error");
+            throw new Error("Error al agregar un nuevo producto");
         }
     }
-
-    
-
 
     async getProducts({ limit = 10, page = 1, sort, query } = {}) {
         try {
@@ -69,7 +78,7 @@ class ProductManager {
 
         } catch (error) {
             console.log("Error al obtener los productos", error);
-            throw error;
+            throw new Error("Error al obtener los productos");
         }
     };
 
@@ -79,47 +88,47 @@ class ProductManager {
 
             if (!product) {
                 console.log("Producto no encontrado");
-                return null;
+                return response(res, 404, "Producto no encontrado");
             };
 
             console.log("Producto encontrado con éxito!");
             return product;
         } catch (error) {
-            console.log("error al buscar el producto por id", error);
+            console.log("Error al buscar el producto por id", error);
+            throw new Error("Error al buscar el producto por id");
         }
     };
 
     async updateProduct(id, productUpdate) {
         try {
-            const updated = await productModel.findByIdAndUpdate(id, productUpdate);
-            if (!updated) {
-                console.log("No se encontro el produdcto");
-                return null;
+            const productUpdated = await productModel.findByIdAndUpdate(id, productUpdate);
+            if (!productUpdated) {
+                console.log("No se encontro el producto");
             };
-
             console.log("Producto actualizado con éxito!");
-            return updated;
+            return productUpdated;
         } catch (error) {
             console.log("Error al actualizar el producto", error);
+            throw new Error("Error al actualizar el producto");
         };
     };
 
     async deleteProduct(id) {
         try {
-            const deleted = await productModel.findByIdAndDelete(id);
+            const deleted = await productModel.findByIdAndDelete(id);;
 
             if (!deleted) {
                 console.log("No se encuentra el producto con el id");
-                return null;
+                return null
             }
 
             console.log("Producto eliminado con éxito!");
+            return deleted;
         } catch (error) {
             console.log("Error al eliminar el producto", error);
-            throw error;
+            throw new Error("Error al eliminar el producto");
         };
     };
-
 };
 
-module.exports = ProductManager;
+module.exports = ProductRepository;

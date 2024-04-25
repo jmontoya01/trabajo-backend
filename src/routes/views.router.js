@@ -1,121 +1,15 @@
 const express = require("express");
 const router = express.Router();
-const ProductManager = require("../controllers/product-manager.js");
-const productManager = new ProductManager();
-const CartManager = require("../controllers/cart-manager.js");
-const cartManager = new CartManager();
-const response = require("../utils/reusables.js");
+const ViewsController = require("../controllers/views.controller.js");
+const viewsController = new ViewsController();
 
 
-
-router.get("/login", (req, res) => {
-    if (req.session.login) {
-        return res.redirect("/profile"); //con .redirect redirigimos a la ruta especificada
-    }
-    res.render("login");
-});
-
-
-router.get("/register", (req, res) => {
-    if (req.session.login) {
-        return res.redirect("/profile");
-    }
-    res.render("register");
-});
-
-
-router.get("/profile", async (req, res) => {
-    if (!req.session.login) {
-        return res.redirect("/login")
-    };
-    // res.render("profile", { user: req.session.user });
-    try {
-        const { page = 1, limit = 2 } = req.query;
-        const products = await productManager.getProducts({
-            page: parseInt(page),
-            limit: parseInt(limit)
-        });
-
-        const newArray = products.docs.map(product => {
-            const { _id, ...rest } = product.toObject();
-            return rest;
-        });
-
-
-        res.render("profile", {
-            user: req.session.user,
-            products: newArray,
-            hasPrevPage: products.hasPrevPage,
-            hasNextPage: products.hasNextPage,
-            prevPage: products.prevPage,
-            nextPage: products.nextPage,
-            currentPage: products.page,
-            totalPages: products.totalPages
-        });
-
-    } catch (error) {
-        console.error("Error al obtener productos", error);
-        response(res, 500, "Error interno del servidor");
-        // res.status(500).json({ status: "error", error: "Error interno del servidor" });
-    };
-});
-
-// router.get("/products", async (req, res) => {
-    
-// });
-
-router.get("/carts/:cid", async (req, res) => {
-    const cartId = req.params.cid;
-
-    try {
-        const cart = await cartManager.getCartById(cartId);
-
-        if (!cart) {
-            console.log("No existe el carrito con el id ingresado");
-            return response(res, 404, "El recurso solicitado no se pudo encontrar");
-            // return res.status(404).json({ error: "El recurso solicitado no se pudo encontrar" })
-        };
-
-        const productsInCart = cart.products.map(item => ({
-            product: item.product.toObject(), //Lo convertimos a objeto para pasar las restricciones de Exp Handlebars. comen profe para no olvidarlo
-            quantity: item.quantity
-        }));
-
-        res.render("carts", { products: productsInCart });
-    } catch (error) {
-        console.error("Error al obtener el carrito", error);
-        response(res, 500, "Error interno del servidor");
-        // res.status(500).json({ status: "error", error: "Error interno del servidor" });
-    }
-});
-
-//volviendo a implementar socket io()
-router.get("/", async (req, res) => {
-    try {
-        const products = await productManager.getProducts();
-        res.render("index", {products: products, user: req.session.user});
-    } catch (error) {
-        response(res, 500, "Error interno del servidor");
-        // res.status(500).json({error: "Error interno del servidor"});
-    }
-});
-
-router.get("/realtimeproducts", async (req, res) => {
-    try {
-        res.render("realtimeproducts");
-    } catch (error) {
-        response(res, 500, "Error interno del servidor");
-        // res.status(500).json({error: "Error interno del servidor"});
-    }
-});
-
-router.get("/chat", async (req, res) => {
-    try {
-        res.render("chat");
-    } catch (error) {
-        response(res, 500, "Error interno del servidor");
-        // res.status(500).json({error: "Error interno del servidor"});
-    }
-})
+router.get("/login", viewsController.renderLogin);
+router.get("/register", viewsController.renderRegister);
+router.get("/profile", viewsController.renderProfile);
+router.get("/carts/:cid", viewsController.renderCarts);
+router.get("/", viewsController.renderIndex);
+router.get("/realtimeproducts", viewsController.renderRealtimeproducts);
+router.get("/chat", viewsController.renderChat);
 
 module.exports = router;

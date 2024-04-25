@@ -53,13 +53,13 @@ const initializePassport = () => {
                 email,
                 age,
                 password: createHash(password),
-                role
+                role: "user"
             };
 
             let result = await userModel.create(newUser);
             return done(null, result);
         } catch (error) {
-            return done("Error al obtener el usuario" + error);
+            return done("Error al obtener el usuario " + error);
         };
     }));
 

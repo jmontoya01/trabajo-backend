@@ -1,9 +1,3 @@
-// const mongoose = require("mongoose");
-
-// mongoose.connect("")
-//     .then(() => console.log("Conexión exitosa con MongoDB"))
-//     .catch(() => console.log("Ocurrio un error inesperado"));
-
 const mongoose = require("mongoose");
 const configObject = require("./config/config.js")
 const {mongo_url} = configObject;
