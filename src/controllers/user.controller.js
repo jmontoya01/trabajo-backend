@@ -1,11 +1,13 @@
 const UserModel = require("../models/user.model.js");
 const { isValidPassword } = require("../utils/hashBcrypt.js");
-const response = require("../utils/reusables.js");
+const Response = require("../utils/reusables.js")
+const response = new Response();
 
 
 class UserController {
     async passportRegister(req, res) {
-        if (!req.user) return res.status(400).send({ status: "error", message: "Credenciales invalidas" });
+        
+        if (!req.user) return response.responseError(res, 400, "Credenciales invalidas");
 
         req.session.user = {
             first_name: req.user.first_name,
@@ -40,14 +42,14 @@ class UserController {
 
                     res.redirect("/profile");
                 } else {
-                    response(res, 401, "Contraseña no valida");
+                    response.responseError(res, 401, "Contraseña no valida");
                 }
             } else {
-                response(res, 404, "Usuario no encontrado");
+                response.responseError(res, 404, "Usuario no encontrado");
             }
 
         } catch (error) {
-            response(res, 400, "Error en el login");
+            response.responseError(res, 400, "Error en el login");
         };
     };
 

@@ -21,7 +21,7 @@ class ProductManager {
 
         } catch (error) {
             console.log("Error al agregar producto", error);
-            throw new Error("Error");
+            throw new Error("Error al agregar producto");
         }
     }
 

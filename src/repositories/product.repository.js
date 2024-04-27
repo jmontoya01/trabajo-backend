@@ -88,13 +88,13 @@ class ProductRepository {
 
             if (!product) {
                 console.log("Producto no encontrado");
-                return response(res, 404, "Producto no encontrado");
+                return 
             };
 
             console.log("Producto encontrado con éxito!");
             return product;
         } catch (error) {
-            console.log("Error al buscar el producto por id", error);
+            console.log("Error al buscar el producto con el id", error);
             throw new Error("Error al buscar el producto por id");
         }
     };

@@ -1,6 +1,7 @@
 const ProductRepository = require("../repositories/product.repository.js");
 const productRepository = new ProductRepository();
-const response = require("../utils/reusables.js");
+const Response = require("../utils/reusables.js")
+const response = new Response();
 
 class ProductController {
     async getProducts(req, res) {
@@ -26,7 +27,7 @@ class ProductController {
             })
         } catch (error) {
             console.error("Error al obtener productos", error);
-            response(res, 500, "Error interno del servidor");
+            response.responseError(res, 500, "Error interno del servidor");
         };
     };
 
@@ -35,13 +36,13 @@ class ProductController {
         try {
             const product = await productRepository.getProductById(id);
             if (!product) {
-                return response(res, 404, "Producto no encontrado");
+                return response.responseError(res, 404, "Producto no encontrado");
             }
             res.json(product);
 
         } catch (error) {
             console.error("Error al obtener el producto con el id", error);
-            response(res, 500, "Error interno del servidor");
+            response.responseError(res, 500, "Error al obtener el producto con el id");
         };
     };
 
@@ -50,13 +51,13 @@ class ProductController {
         try {
             const result = await productRepository.addProduct(newProduct);
             if (!result) {
-                response(res, 400, "El valor de ese code ya existe y no puede repetirse, ingrese otro code");
+                response.responseError(res, 400, "El valor de ese code ya existe y no puede repetirse, ingrese otro code");
             }
             console.log("Producto agregado exitosamente");
             res.json(result);
         } catch (error) {
             console.error("Error al crear el producto", error);
-            response(res, 500, "Error interno del servidor");
+            response.responseError(res, 500, "Error interno del servidor");
         };
     };
 
@@ -66,10 +67,11 @@ class ProductController {
             const updateProduct = req.body;
 
             const productUpdate = await productRepository.updateProduct(id, updateProduct);
+            console.log("Producto actualizado con éxito");
             res.json(productUpdate);
         } catch (error) {
             console.error("Error al actualizar el producto con el id", error);
-            response(res, 500, "Error interno del servidor");
+            response.responseError(res, 500, "Error interno del servidor");
         };
     };
 
@@ -79,11 +81,11 @@ class ProductController {
         try {
             let productDelete = await productRepository.deleteProduct(id);
             if (productDelete) {
-                response(res, 200, "La solicitud ha tenido éxito y se ha eliminado el recurso como resultado");
+                response.responseSucess(res, 200, "La solicitud ha tenido éxito y se ha eliminado el recurso como resultado");
             }
         } catch (error) {
             console.error("Error al eliminar el producto", error);
-            response(res, 500, "Error interno del servidor");
+            response.responseError(res, 500, "Error interno del servidor");
         };
     }
 };

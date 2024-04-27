@@ -2,17 +2,20 @@ const ProductRepository = require("../repositories/product.repository.js");
 const productRepository = new ProductRepository();
 const CartRepository = require("../repositories/cart.repository.js");
 const cartRepository = new CartRepository();
+const Response = require("../utils/reusables.js")
+const response = new Response();
+
 
 class ViewsController {
 
-    renderLogin(req, res) {
+    async renderLogin(req, res) {
         if (req.session.login) {
             return res.redirect("/profile"); //con .redirect redirigimos a la ruta especificada
         }
         res.render("login");
     };
 
-    renderRegister(req, res) {
+    async renderRegister(req, res) {
         if (req.session.login) {
             return res.redirect("/profile");
         }
@@ -50,7 +53,7 @@ class ViewsController {
 
         } catch (error) {
             console.error("Error al obtener los productos", error);
-            response(res, 500, "Error al obtener los productos");
+            response.responseError(res, 500, "Error al obtener los productos");
         };
     };
 
@@ -62,7 +65,7 @@ class ViewsController {
 
             if (!cart) {
                 console.log("No existe el carrito con el id ingresado");
-                return response(res, 404, "El recurso solicitado no se pudo encontrar");
+                return response.responseError(res, 404, "El recurso solicitado no se pudo encontrar");
             };
 
             const productsInCart = cart.products.map(item => ({
@@ -73,7 +76,7 @@ class ViewsController {
             res.render("carts", { products: productsInCart });
         } catch (error) {
             console.error("Error al obtener el carrito", error);
-            response(res, 500, "Error al obtener el carrito");
+            response.responseError(res, 500, "Error al obtener el carrito");
         };
     };
     
@@ -82,7 +85,7 @@ class ViewsController {
             const products = await productRepository.getProducts();
             res.render("index", {products: products, user: req.session.user});
         } catch (error) {
-            response(res, 500, "Error interno del servidor");
+            response.responseError(res, 500, "Error interno del servidor");
         };
     };
 
@@ -90,7 +93,7 @@ class ViewsController {
         try {
             res.render("realtimeproducts");
         } catch (error) {
-            response(res, 500, "Error interno del servidor");
+            response.responseError(res, 500, "Error interno del servidor");
         };
     };
 
@@ -98,7 +101,7 @@ class ViewsController {
         try {
             res.render("chat");
         } catch (error) {
-            response(res, 500, "Error interno del servidor");
+            response.responseError(res, 500, "Error interno del servidor");
         };
     };
 };

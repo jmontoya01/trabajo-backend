@@ -1,6 +1,7 @@
 const CartRepository = require("../repositories/cart.repository.js");
 const cartRepository = new CartRepository();
-const response = require("../utils/reusables.js");
+const Response = require("../utils/reusables.js")
+const response = new Response();
 
 class CartController {
     async newCart(req, res) {
@@ -10,7 +11,7 @@ class CartController {
             return res.json(newCart);
         } catch (error) {
             console.error("Error al crear el carrito", error);
-            response(res, 500, "Error interno del servidor");
+            response.responseError(res, 500, "Error interno del servidor");
         };
     };
 
@@ -20,13 +21,13 @@ class CartController {
             const cart = await cartRepository.getCartById(cartId);
             if (!cart) {
                 console.log("No encontramos el carrito con el id");
-                return response(res, 404, " El recurso solicitado no se pudo encontrar.")
+                return response.responseError(res, 404, " El recurso solicitado no se pudo encontrar.")
             }
             console.log("carrito encontrado con éxito");
             return res.json(cart.products)
         } catch (error) {
             console.error("Error al obtener el carrito", error);
-            response(res, 500, "Error interno del servidor");
+            response.responseError(res, 500, "Error al obtener el carrito");
         };
     };
 
@@ -39,10 +40,11 @@ class CartController {
             const productInCart = await cartRepository.addProductToCart(cartId, productId, quantity);
             // const cartID = (req.user.cart).toString();//fede no entiendo porque el profe puso esto, me puedes explicar de donde salio el req.user,cart?
             // res.redirect(`/carts${cartID}`);
-            res.json({ status: "success", message: "Producto agregado con éxito", productInCart });
+            console.log("Producto agregado al carrito correctamente");
+            res.json(productInCart)
         } catch (error) {
             console.error("Error al agregar productos al carrito", error);
-            response(res, 500, "Error al agregar productos al carrito");
+            response.responseError(res, 500, "Error al agregar productos al carrito");
         };
     };
 
@@ -51,10 +53,11 @@ class CartController {
             const cartId = req.params.cid;
             const productId = req.params.pid;
             const updateCart = await cartRepository.deleteProductFromCart(cartId, productId);
-            res.json({ estatus: "success", message: "Producto eliminado del carrito con éxito", updateCart });
+            console.log("Producto eliminado del carrito con éxito");
+            res.json(updateCart);
         } catch (error) {
             console.error("Error al agregar un producto al carrito", error);
-            response(res, 500, "Error al agregar un producto al carrito");
+            response.responseError(res, 500, "Error al agregar un producto al carrito");
         };
     };
 
@@ -66,10 +69,10 @@ class CartController {
 
             const updateCart = await cartRepository.updateProductsInCart(cartId, updateProducts);
             console.log("Producto actualizado con éxito");
-            res.json({ estatus: "success", message: "Producto actualizado con éxito", updateCart });
+            res.json(updateCart);
         } catch (error) {
-            console.log("Error al actualizar los productos");
-            response(res, 500, "Error al actualizar los productos", error);
+            console.log("Error al actualizar los productos", error);
+            response.responseError(res, 500, "Error al actualizar los productos");
         };
     };
 
@@ -80,11 +83,11 @@ class CartController {
             const newQuantity = req.body.quantity;
 
             const updateCart = await cartRepository.updateProductQuantity(cartId, productId, newQuantity);
-            res.json({ status: "sucess", message: "Cantidad del producto actualizada correctamente", updateCart });
-
+            console.log("Cantidad del producto actualizada correctamente");
+            res.json(updateCart);
         } catch (error) {
             console.log("Error al actualizar la cantidad del producto");
-            response(res, 500, "Error al actualizar la cantidad del producto", error)
+            response.responseError(res, 500, "Error al actualizar la cantidad del producto", error)
         };
     };
 
@@ -93,10 +96,10 @@ class CartController {
             const cartId = req.params.cid;
             const updateCart = cartRepository.emptyCart(cartId);
             console.log("Carrito eliminado con éxito!");
-            res.json({ status: "sucess", message: "Carrito eliminado con éxito!", updateCart })
+            res.json(updateCart);
         } catch (error) {
             console.log("Error al vaciar el carrito");
-            response(res, 500, "Error al vaciar el carrito", error);
+            response.responseError(res, 500, "Error al vaciar el carrito", error);
         };
     };
 
