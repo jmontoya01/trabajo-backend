@@ -40,7 +40,7 @@ class UserController {
                         role: user.role
                     };
 
-                    res.redirect("/profile");
+                    res.redirect("/");
                 } else {
                     response.responseError(res, 401, "Contraseña no valida");
                 }

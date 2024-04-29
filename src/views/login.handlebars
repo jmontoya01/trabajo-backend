@@ -1,18 +1,18 @@
 <h1 class="h1__login">Login</h1>
 <form action="/api/users/login" method="POST" class="container__login"> {{!-- //action pasamos la ruta y en method pasamos el metodo q vamos a utilizar --}}
-    <div class="container__login__input">
+    <div class="uploadContainer">
     <label for="email">Email:</label>
     <input type="text" id="email" name="email" required>
     </div>
     <br>
-    <div class="container__login__input">
+    <div class="uploadContainer">
     <label for="password">Password:</label>
     <input type="password" id="password" name="password">
     </div>
     <br>
     
-    <button class="btn__login" type="submit">Login</button>
+    <button class="btn" type="submit">Login</button>
     
-    <a href="/register" class="btn__register">Registrarse</a>
-    <a href="/api/users/github" class="btn__register">Loguear con Github</a>
+    <a href="/register" class="btn">Registrarse</a>
+    <a href="/api/users/github" class="btn">Loguear con Github</a>
 </form>

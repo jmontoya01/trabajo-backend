@@ -119,7 +119,6 @@ class ProductRepository {
 
             if (!deleted) {
                 console.log("No se encuentra el producto con el id");
-                return null
             }
 
             console.log("Producto eliminado con éxito!");

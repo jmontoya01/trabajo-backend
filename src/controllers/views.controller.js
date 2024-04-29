@@ -83,7 +83,20 @@ class ViewsController {
     async renderIndex(req, res) {
         try {
             const products = await productRepository.getProducts();
-            res.render("index", {products: products, user: req.session.user});
+            const newArray = products.docs.map(product => {
+                const { _id, ...rest } = product.toObject();
+                return rest;
+            });
+            res.render("index", {
+                user: req.session.user,
+                products: newArray, 
+                hasPrevPage: products.hasPrevPage,
+                hasNextPage: products.hasNextPage,
+                prevPage: products.prevPage,
+                nextPage: products.nextPage,
+                currentPage: products.page,
+                totalPages: products.totalPages
+            });
         } catch (error) {
             response.responseError(res, 500, "Error interno del servidor");
         };

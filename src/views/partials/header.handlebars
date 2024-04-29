@@ -1,8 +1,17 @@
 <header>
-    <a href="/profile" class="logo__user">LOGO</a>
+    <a href="/" ><img src="https://firebasestorage.googleapis.com/v0/b/proyecto-react-6bd56.appspot.com/o/ojos-transformed.jpeg?alt=media&token=bade8179-7c2c-446d-858a-b09377773c11" 
+    alt="ojos de fuego" class="img"></a>
+    
     <nav>
-        <ul>
-            <li><a href="/profile" class="profile__li">Perfil {{user.first_name}}</a></li>
+        <ul class="header__li">
+            {{#if user}}
+                <li><a href="/profile" class="uploadLi">Hola {{user.first_name}}</a></li>
+                <li><a href="/api/users/logout" class="uploadLi">Cerrar sesión</a></li>
+                <li><a href="/chat" class="uploadLi">Chat</a></li>
+                {{else}}
+                <li><a href="/login" class="uploadLi">Login</a></li>
+                <li><a href="/register" class="uploadLi">Registrarse</a></li>
+            {{/if}}
         </ul>
     </nav>
 </header>

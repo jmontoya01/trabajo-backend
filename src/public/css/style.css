@@ -1,4 +1,4 @@
-* {
+/* * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
@@ -41,7 +41,7 @@ text-align: center;
     padding: 10px;
     width: 200px;
     border-radius: 8px;
-}
+} */
 
 /* .btnEliminar{
     width: 100px;
@@ -53,7 +53,7 @@ text-align: center;
     background-color: aquamarine;
 } */
 
-.container__form{
+/* .container__form{
     display: flex;
     justify-content: center;
     align-items: center;
@@ -111,10 +111,10 @@ color: aliceblue;
     font-size: 0.7;
     margin: 10px;
     color: black;
-}
+} */
 
 /*Button*/
-.btn{
+/* .btn{
     text-align: center;
     display: inline-block;
     justify-content: center;
@@ -250,4 +250,325 @@ nav ul {
 
 .h2__products{
     text-align: center;
+} */
+
+/* reseteo css */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* //////////////// */
+h1 {
+    color: coral;
+    text-align: center;
+    font-size: 50px;
+}
+
+.upload {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.uploadContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    border-radius: 6px;
+    background-color: #f2f2f2;
+}
+
+.upload input {
+    padding: 10px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 6px;
+}
+
+.upload button {
+    background-color: #e60023;
+    color: aliceblue;
+    cursor: pointer;
+    padding: 10px 10px;
+    border-radius: 10px;
+}
+
+.upload button:hover {
+    background-color: #c4001c;
+}
+
+/* header */
+
+header {
+    background-color: black;
+    color: white;
+    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    margin-bottom: 50px;
+}
+
+.header__li {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+}
+
+.logo {
+    font-size: 2rem;
+    text-decoration: none;
+    color: white;
+}
+
+.logo:hover {
+    color: rgba(47, 248, 7, 0.884);
+}
+
+nav ul {
+    list-style: none;
+}
+
+.btnUpload {
+    text-decoration: none;
+    color: white;
+    font-weight: bold;
+    font-size: 1.5rem;
+    transition: all 0.3s;
+}
+
+.btnUpload:hover {
+    color: rgb(229, 222, 222);
+}
+
+.uploadLi {
+    text-decoration: none;
+    color: white;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+.uploadLi:hover {
+    color: rgba(248, 75, 7, 0.884);
+}
+
+
+
+.card {
+    display: inline-block;
+    width: 300px;
+    margin: 10px;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    background-color: #fff;
+}
+
+.card img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.card h3 {
+    font-size: 0.8rem;
+    font-weight: bold;
+    margin: 10px;
+}
+
+.card p {
+    font-size: 0.7;
+    margin: 10px;
+    color: #777;
+}
+
+/*Button*/
+.btn {
+    display: inline-block;
+    padding: 8px 16px;
+    background-color: #c4001a;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: pointer;
+    margin: 10px;
+    text-decoration: none;
+}
+
+a {
+    text-decoration: none;
+    color: #fff;
+}
+
+.btn:hover {
+    background-color: #e60023;
+}
+
+.container__login {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.container__login__input {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    border-radius: 6px;
+    background-color: #f2f2f2;
+}
+
+.h1__login {
+    text-align: center;
+}
+
+#password,
+#email,
+#age,
+#last_name,
+#first_name {
+    border-radius: 5px;
+    font-size: 1.5rem;
+}
+
+button {
+    background-color: #c4001a;
+    border: none;
+    text-decoration: none;
+    color: #fff;
+}
+
+button:hover {
+    background-color: #c4001a;
+}
+
+.container__perfil {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.container__form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.form {
+    display: flex;
+    width: 20vw;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    border-radius: 10px;
+}
+
+.img {
+    width: 100px;
+    height: 100px;
+}
+
+.h2__products {
+    text-align: center;
+}
+
+/* Contenedor general del chat */
+.container-chat {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    margin-top: 50px;
+}
+
+.chat-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 400px;
+    height: 500px;
+    background-color: #f4f7f6;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    overflow: hidden
+}
+
+/* Área donde se muestran los mensajes */
+.messages {
+    padding: 10px;
+    overflow-y: auto;
+    flex-grow: 1;
+}
+
+/* Estilos para los mensajes del usuario y del respondiente */
+.message {
+    padding: 8px 15px;
+    border-radius: 20px;
+    color: white;
+    max-width: 70%;
+    margin-bottom: 10px;
+    word-wrap: break-word;
+}
+
+/* Mensajes del usuario */
+.message.user {
+    background-color: #007bff;
+    align-self: flex-end;
+}
+
+/* Mensajes del respondiente */
+.message.respondent {
+    background-color: #333;
+    align-self: flex-start;
+}
+
+/* Área de entrada de texto */
+.input-area {
+    border-top: 1px solid #ccc;
+    padding: 8px;
+    display: flex;
+}
+
+/* Campo de texto para escribir el mensaje */
+.input-field {
+    flex-grow: 1;
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+    margin-right: 8px;
+}
+
+.input-field:focus {
+    outline: none;
+}
+
+/* Botón de enviar */
+.send-button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.send-button:hover {
+    background-color: #0056b3;
 }
