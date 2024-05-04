@@ -2,7 +2,8 @@ const ProductRepository = require("../repositories/product.repository.js");
 const productRepository = new ProductRepository();
 const CartRepository = require("../repositories/cart.repository.js");
 const cartRepository = new CartRepository();
-const Response = require("../utils/reusables.js")
+const Response = require("../utils/reusables.js");
+const productModel = require("../models/product.model.js");
 const response = new Response();
 
 
@@ -23,39 +24,56 @@ class ViewsController {
     };
 
     async renderProfile(req, res) {
-        if (!req.session.login) {
-            return res.redirect("/login")
-        };
-        // res.render("profile", { user: req.session.user });
+        const isAdmin = req.session.user.role === "admin"
+        const user = req.session.user
         try {
-            const { page = 1, limit = 2 } = req.query;
-            const products = await productRepository.getProducts({
-                page: parseInt(page),
-                limit: parseInt(limit)
-            });
-
-            const newArray = products.docs.map(product => {
-                const { _id, ...rest } = product.toObject();
-                return rest;
-            });
-
-
-            res.render("profile", {
-                user: req.session.user,
-                products: newArray,
-                hasPrevPage: products.hasPrevPage,
-                hasNextPage: products.hasNextPage,
-                prevPage: products.prevPage,
-                nextPage: products.nextPage,
-                currentPage: products.page,
-                totalPages: products.totalPages
-            });
-
+            if (!req.session.login) {
+                return res.redirect("/login")
+            };
+            res.render("profile", { user: user, isAdmin });
         } catch (error) {
-            console.error("Error al obtener los productos", error);
-            response.responseError(res, 500, "Error al obtener los productos");
+            console.error("Error al obtener el usuario", error);
+            response.responseError(res, 500, "Error al obtener el usuario");
         };
     };
+
+    async renderProducts(req, res) {
+        try {
+            const { page = 1, limit = 10 } = req.query;
+            const skip = (page - 1) * limit;
+            const products = await productModel
+                .find()
+                .skip(skip)
+                .limit(limit);
+
+            const totalProducts = await productModel.countDocuments();
+            const totalPages = Math.ceil(totalProducts / limit);
+            const hasPrevPage = page > 1;
+            const hasNextPage = page < totalPages;
+
+            const newArray = products.map(product => {
+                const { _id, ...rest } = product.toObject();
+                return { id: _id, ...rest };
+            });
+
+            const cartId = req.session.cart;
+
+            res.render("products", {
+                products: newArray,
+                hasPrevPage,
+                hasNextPage,
+                prevPage: page > 1 ? parseInt(page) - 1 : null,
+                nextPage: page < totalPages ? parseInt(page) + 1 : null,
+                currentPage: parseInt(page),
+                totalPages,
+                cartId
+            })
+
+        } catch (error) {
+            console.log("Error al obtener los productos", error);
+            response.responseError(res, 500, "Error al obtener los productos")
+        }
+    }
 
     async renderCarts(req, res) {
         const cartId = req.params.cid;
@@ -79,31 +97,16 @@ class ViewsController {
             response.responseError(res, 500, "Error al obtener el carrito");
         };
     };
-    
+
     async renderIndex(req, res) {
-        try {
-            const products = await productRepository.getProducts();
-            const newArray = products.docs.map(product => {
-                const { _id, ...rest } = product.toObject();
-                return rest;
-            });
-            res.render("index", {
-                user: req.session.user,
-                products: newArray, 
-                hasPrevPage: products.hasPrevPage,
-                hasNextPage: products.hasNextPage,
-                prevPage: products.prevPage,
-                nextPage: products.nextPage,
-                currentPage: products.page,
-                totalPages: products.totalPages
-            });
-        } catch (error) {
-            response.responseError(res, 500, "Error interno del servidor");
-        };
+        res.render("index");
     };
 
     async renderRealtimeproducts(req, res) {
         try {
+            if (req.session.user.role !== "admin") {
+                return response.responseMessage(res, 403, "Acceso denegado");
+            }
             res.render("realtimeproducts");
         } catch (error) {
             response.responseError(res, 500, "Error interno del servidor");
@@ -112,11 +115,21 @@ class ViewsController {
 
     async renderChat(req, res) {
         try {
+            if (req.session.user.role != "user") {
+                return response.responseMessage(res, 403, "Acceso denegado");
+            }
             res.render("chat");
         } catch (error) {
             response.responseError(res, 500, "Error interno del servidor");
         };
     };
+
+    async admin(req, res) {
+        if (req.session.user.role !== "admin") {
+            return response.responseMessage(res, 403, "Acceso denegado");
+        }
+        res.render("admin", { user: req.session.user });
+    }
 };
 
 module.exports = ViewsController;

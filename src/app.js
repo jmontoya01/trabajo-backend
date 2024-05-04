@@ -12,7 +12,8 @@ const passport = require("passport");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const configObject = require("./config/config.js")
-const {port} = configObject;
+const {port, mongo_url} = configObject;
+const compression = require("express-compression")
 require("./database.js");
 
 //Middlewares
@@ -21,13 +22,14 @@ app.use(express.json());
 app.use(express.static("./src/public"));
 app.use(cookieParser());
 app.use(cors());
+app.use(compression());
 app.use(session ({
     secret: "secretCoder",
     resave: true,
     saveUninitialized: true,
 
     store: MongoStore.create({
-        mongoUrl:"mongodb+srv://jeffquetas:jeff1302@cluster0.zqiftye.mongodb.net/proyecto-backend?retryWrites=true&w=majority",
+        mongoUrl:mongo_url,
         ttl: 100//ttl: expires basado en ttl y se encarga de limpiar autamaticamente una vez q pase el tiempo de expires
     })
 }));

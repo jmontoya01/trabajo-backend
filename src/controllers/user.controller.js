@@ -17,7 +17,7 @@ class UserController {
             role: req.user.role
         };
         req.session.login = true;
-        res.redirect("/profile");
+        res.redirect("/login");
     };
 
     failregister(req, res) {
@@ -27,8 +27,8 @@ class UserController {
     async login(req, res) {
         const { email, password } = req.body;
         try {
-            // const user = await userRepository.findByEmail(email);
             const user = await UserModel.findOne({email});
+            
             if (user) {
                 if (isValidPassword(password, user)) {
                     req.session.login = true;
@@ -39,8 +39,12 @@ class UserController {
                         last_name: user.last_name,
                         role: user.role
                     };
-
-                    res.redirect("/");
+                    if (user.role === "admin") {
+                        res.redirect("/admin");
+                    } else {
+                        res.redirect("/profile");
+                    }
+                        
                 } else {
                     response.responseError(res, 401, "Contraseña no valida");
                 }

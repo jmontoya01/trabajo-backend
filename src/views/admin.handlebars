@@ -1,2 +1,9 @@
-<h1>Hola soy un admin y tengo el control total de este mundo, muuuuahahahaha!!!</h1>
-<a href="/api/users/logout">Logout</a>
+<div class="container__perfil">
+    <h1>Mi Perfil</h1>
+    <h2>Bienvenido Admin!!</h2>
+    <p>Nombre: {{user.first_name}}</p>
+    <p>usuario: {{user.role}}</p>
+
+    <a href="/realtimeproducts" class="btn">Modificar Productos</a>
+    <a href="/api/users/logout" class="btn">Logout</a>
+</div>

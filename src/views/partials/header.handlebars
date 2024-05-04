@@ -7,11 +7,11 @@
             {{#if user}}
                 <li><a href="/profile" class="uploadLi">Hola {{user.first_name}}</a></li>
                 <li><a href="/api/users/logout" class="uploadLi">Cerrar sesión</a></li>
-                <li><a href="/chat" class="uploadLi">Chat</a></li>
                 {{else}}
                 <li><a href="/login" class="uploadLi">Login</a></li>
                 <li><a href="/register" class="uploadLi">Registrarse</a></li>
             {{/if}}
+            
         </ul>
     </nav>
 </header>

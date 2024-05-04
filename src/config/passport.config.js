@@ -2,6 +2,7 @@ const passport = require("passport");
 const local = require("passport-local");
 const GitHubStrategy = require("passport-github2");
 const userModel = require("../models/user.model.js");
+const cartModel = require("../models/cart.model.js");
 const {createHash, isValidPassword} = require("../utils/hashBcrypt.js");
 
 const LocalStrategy = local.Strategy;
@@ -43,17 +44,20 @@ const initializePassport = () => {
         try {
             let user = await userModel.findOne({email: username});
             if (user) {
-                console.log("Usuario no encontrado")
+                console.log("El usuario ya esta registrado")
                 return done(null, false);
             } 
+
+            const newCart = new cartModel();
+            await newCart.save()
 
             let newUser = {
                 first_name,
                 last_name,
                 email,
-                age,
+                cart: newCart._id,
                 password: createHash(password),
-                role: "user"
+                age
             };
 
             let result = await userModel.create(newUser);

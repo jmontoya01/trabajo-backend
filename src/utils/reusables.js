@@ -4,7 +4,7 @@ class response {
     };
 
     async responseError(res, status, message) {
-        res.status(status).json({error: "error", message});
+        res.status(status).json({status: "error", message});
     };
 
     async responseSucess(res, status, message) {
