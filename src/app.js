@@ -27,7 +27,7 @@ app.use(session ({
     secret: "secretCoder",
     resave: true,
     saveUninitialized: true,
-
+    cookie: { maxAge: 7200000 },
     store: MongoStore.create({
         mongoUrl:mongo_url,
         ttl: 100//ttl: expires basado en ttl y se encarga de limpiar autamaticamente una vez q pase el tiempo de expires

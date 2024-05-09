@@ -21,6 +21,16 @@
     </form>
 </div>
 
+<div class="container__login">
+{{#if hasNextPage}}
+<a href="/products?page={{nextPage}}" class="btnNextPrevius"> Siguiente </a>
+{{/if}}
+{{#if hasPrevPage}}
+<a href="/products?page={{prevPage}}" class="btnNextPrevius"> Anterior </a>
+{{/if}}
+<p class="paragrap">Pagina {{currentPage}} de {{totalPages}} </p>
+</div>
+
 
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.2/socket.io.min.js"></script>

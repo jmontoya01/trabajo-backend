@@ -1,6 +1,14 @@
+const cartModel = require("../models/cart.model.js");
+const productModel = require("../models/product.model.js");
+const TicketModel = require("../models/ticket.model.js");
+const userModel = require("../models/user.model.js");
 const CartRepository = require("../repositories/cart.repository.js");
 const cartRepository = new CartRepository();
-const Response = require("../utils/reusables.js")
+const ProductRepository = require("../repositories/product.repository.js");
+const { generateUniqueCode, calculateTotal } = require("../utils/cartutils.js");
+const { sendPurchaseEMail } = require("../utils/email.js");
+const productRepository = new ProductRepository();
+const Response = require("../utils/reusables.js");
 const response = new Response();
 
 class CartController {
@@ -37,11 +45,19 @@ class CartController {
         const quantity = req.body.quantity || 1;
 
         try {
-            const productInCart = await cartRepository.addProductToCart(cartId, productId, quantity);
-            // const cartID = (req.user.cart).toString();//fede no entiendo porque el profe puso esto, me puedes explicar de donde salio el req.user,cart?
-            // res.redirect(`/carts${cartID}`);
+            const cart = await cartModel.findOne({ _id: cartId })
+            const product = await productModel.findOne({ _id: productId })
+            if (!cart) {
+                response.responseMessage(res, 404, "Carrito no encontrado");
+            }
+            if (!product) {
+                response.responseMessage(res, 404, "Producto no encontrado");
+            }
+            await cartRepository.addProductToCart(cart, product, quantity);
+            const cartID = (req.session.user.cart).toString();
+            res.redirect(`/carts/${cartID}`);
             console.log("Producto agregado al carrito correctamente");
-            res.json(productInCart)
+            // res.json(productInCart)
         } catch (error) {
             console.error("Error al agregar productos al carrito", error);
             response.responseError(res, 500, "Error al agregar productos al carrito");
@@ -49,15 +65,15 @@ class CartController {
     };
 
     async deleteProductFromCart(req, res) {
+        const cartId = req.params.cid;
+        const productId = req.params.pid;
         try {
-            const cartId = req.params.cid;
-            const productId = req.params.pid;
             const updateCart = await cartRepository.deleteProductFromCart(cartId, productId);
             console.log("Producto eliminado del carrito con éxito");
             res.json(updateCart);
         } catch (error) {
-            console.error("Error al agregar un producto al carrito", error);
-            response.responseError(res, 500, "Error al agregar un producto al carrito");
+            console.error("Error al eliminar un producto del carrito", error);
+            response.responseError(res, 500, "Error al eliminar un producto del carrito");
         };
     };
 
@@ -66,8 +82,11 @@ class CartController {
         const updateProducts = req.body;
 
         try {
-
-            const updateCart = await cartRepository.updateProductsInCart(cartId, updateProducts);
+            const cart = await cartModel.findOne({ _id: cartId })
+            if (!cart) {
+                response.responseMessage(res, 404, "Carrito no encontrado");
+            }
+            const updateCart = await cartRepository.updateProductsInCart(cart, updateProducts);
             console.log("Producto actualizado con éxito");
             res.json(updateCart);
         } catch (error) {
@@ -77,12 +96,20 @@ class CartController {
     };
 
     async updateProductQuantity(req, res) {
+        const cartId = req.params.cid;
+        const productId = req.params.pid;
+        const newQuantity = req.body.quantity;
         try {
-            const cartId = req.params.cid;
-            const productId = req.params.pid;
-            const newQuantity = req.body.quantity;
+            const cart = await cartModel.findOne({ _id: cartId })
+            const product = await productModel.findOne({ _id: productId })
+            if (!cart) {
+                response.responseMessage(res, 404, "Carrito no encontrado");
+            }
+            if (!product) {
+                response.responseMessage(res, 404, "Producto no encontrado");
+            }
 
-            const updateCart = await cartRepository.updateProductQuantity(cartId, productId, newQuantity);
+            const updateCart = await cartRepository.updateProductQuantity(cart, product, newQuantity);
             console.log("Cantidad del producto actualizada correctamente");
             res.json(updateCart);
         } catch (error) {
@@ -92,9 +119,13 @@ class CartController {
     };
 
     async emptyCart(req, res) {
+        const cartId = req.params.cid;
         try {
-            const cartId = req.params.cid;
-            const updateCart = cartRepository.emptyCart(cartId);
+            const cart = await cartModel.findOne({ _id: cartId })
+            if (!cart) {
+                response.responseMessage(res, 404, "Carrito no encontrado");
+            }
+            const updateCart = cartRepository.emptyCart(cart);
             console.log("Carrito eliminado con éxito!");
             res.json(updateCart);
         } catch (error) {
@@ -102,6 +133,53 @@ class CartController {
             response.responseError(res, 500, "Error al vaciar el carrito", error);
         };
     };
+
+    async Checkout(req, res) {
+        const cartId = req.params.cid;
+        try {
+            const cart = await cartRepository.getCartById(cartId)//optener carrito y sus productos
+            const products = cart.products;
+
+            const unavailableProducts = []; // arreglo para productos no disponibles
+
+            for (const item of products) {//verificamos stock y actualizamos los productos disponibles
+                const productId = item.product;
+                const product = await productRepository.getProductById(productId);
+                if (product.stock >= item.quantity) {//si hay suficiente stock restamos la cantidad del producto
+                    product.stock -= item.quantity;
+                    await product.save();
+                } else {// si no hay suficiente stock, agregamos el id del producto al arregle unavailableProducts
+                    unavailableProducts.push(productId)
+                }
+            }
+
+            const userCart = await userModel.findOne({ cart: cartId });//buscamos el carrito con el id del usuario
+            const ticket = new TicketModel({//creamos un ticket con los datos de la compra
+                code: generateUniqueCode(),
+                purchase_datetime: new Date(),
+                amount: calculateTotal(cart.products),
+                purchaser: userCart._id
+            });
+            await ticket.save();
+
+            cart.products = cart.products.filter(item => unavailableProducts.some(productId => productId.equals(item.product)));//elinamos del carrito los productos que sí se compraron
+            await cart.save();//guardamos el carrito actualizado en la base de datos
+            // res.status(200).json({ unavailableProducts })
+            await sendPurchaseEMail(userCart.email, userCart.first_name, ticket._id);
+
+            res.render("checkout", {
+                client: userCart.first_name,
+                email: userCart.email,
+                numTicket: ticket._id,
+                cart,
+                user: req.session.user
+            });
+
+        } catch (error) {
+            console.error("Error al finalizar la compra", error);
+            response.responseError(req, 500, "Error al procesar la compra");
+        }
+    }
 
 };
 

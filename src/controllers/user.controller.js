@@ -14,7 +14,8 @@ class UserController {
             last_name: req.user.last_name,
             age: req.user.age,
             email: req.user.email,
-            role: req.user.role
+            role: req.user.role,
+            cart: req.user.cart
         };
         req.session.login = true;
         res.redirect("/login");
@@ -37,7 +38,8 @@ class UserController {
                         age: user.age,
                         first_name: user.first_name,
                         last_name: user.last_name,
-                        role: user.role
+                        role: user.role,
+                        cart: user.cart
                     };
                     if (user.role === "admin") {
                         res.redirect("/admin");

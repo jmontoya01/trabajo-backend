@@ -24,7 +24,7 @@ class ViewsController {
     };
 
     async renderProfile(req, res) {
-        const isAdmin = req.session.user.role === "admin"
+        const isAdmin = req.session.role === "admin"
         const user = req.session.user
         try {
             if (!req.session.login) {
@@ -39,7 +39,7 @@ class ViewsController {
 
     async renderProducts(req, res) {
         try {
-            const { page = 1, limit = 10 } = req.query;
+            const { page = 1, limit = 20 } = req.query;
             const skip = (page - 1) * limit;
             const products = await productModel
                 .find()
@@ -56,9 +56,10 @@ class ViewsController {
                 return { id: _id, ...rest };
             });
 
-            const cartId = req.session.cart;
+            const cartId = req.session.user.cart;
 
             res.render("products", {
+                user: req.session.user,
                 products: newArray,
                 hasPrevPage,
                 hasNextPage,
@@ -85,13 +86,23 @@ class ViewsController {
                 console.log("No existe el carrito con el id ingresado");
                 return response.responseError(res, 404, "El recurso solicitado no se pudo encontrar");
             };
+            
+            let totalPurchase = 0;
 
-            const productsInCart = cart.products.map(item => ({
-                product: item.product.toObject(), //Lo convertimos a objeto para pasar las restricciones de Exp Handlebars. comen profe para no olvidarlo
-                quantity: item.quantity
-            }));
+            const productsInCart = cart.products.map(item => {
+                const product = item.product.toObject();
+                const quantity = item.quantity;
+                const totalPrice = product.price * quantity;
 
-            res.render("carts", { products: productsInCart });
+                totalPurchase += totalPrice;
+                
+                return {
+                    product: {...product, totalPrice},
+                    quantity,
+                    cartId
+                };
+            });
+            res.render("carts", {products: productsInCart, totalPurchase, cartId, user: req.session.user});
         } catch (error) {
             console.error("Error al obtener el carrito", error);
             response.responseError(res, 500, "Error al obtener el carrito");
@@ -99,15 +110,12 @@ class ViewsController {
     };
 
     async renderIndex(req, res) {
-        res.render("index");
+        res.render("index", {user: req.session.user});
     };
 
     async renderRealtimeproducts(req, res) {
         try {
-            if (req.session.user.role !== "admin") {
-                return response.responseMessage(res, 403, "Acceso denegado");
-            }
-            res.render("realtimeproducts");
+            res.render("realtimeproducts", {user: req.session.user});
         } catch (error) {
             response.responseError(res, 500, "Error interno del servidor");
         };
@@ -115,9 +123,6 @@ class ViewsController {
 
     async renderChat(req, res) {
         try {
-            if (req.session.user.role != "user") {
-                return response.responseMessage(res, 403, "Acceso denegado");
-            }
             res.render("chat");
         } catch (error) {
             response.responseError(res, 500, "Error interno del servidor");
@@ -125,9 +130,6 @@ class ViewsController {
     };
 
     async admin(req, res) {
-        if (req.session.user.role !== "admin") {
-            return response.responseMessage(res, 403, "Acceso denegado");
-        }
         res.render("admin", { user: req.session.user });
     }
 };

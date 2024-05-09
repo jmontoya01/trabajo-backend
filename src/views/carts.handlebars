@@ -1,8 +1,34 @@
-<h1>Carrito de Compras</h1>
-
-{{#each products}}
-<div>
-    <p>Producto: {{this.product.title}}</p>
-    <p>Cantidad: {{this.quantity}}</p>
+<div class="shopping-cart">
+    <h2>Tu Carrito de Compras</h2>
+    {{#if products}}
+    {{#each products}}
+    <div class="cart-items">
+        <div class="cart-item">
+            <div class="item-details">
+                <h4 class="product-name">{{product.title}}</h4>
+                <h3 class="">Precio: ${{product.totalPrice}}</h3>
+                <p class="card-text">Cantidad: {{quantity}}</p>
+                <button onclick="deletedProduct('{{cartId}}', '{{product._id}}')" class="remove-item">Eliminar</button>
+            </div>
+        </div>
+    </div>
+    {{/each}}
+    <div class="cart-summary">
+        <h3>Resumen del Pedido</h3>
+        <h3>Total: ${{totalPurchase}}</h3>
+        <div class="cart-summary-button">
+            <form method="post" action="/api/carts/{{cartId}}/purchase">
+                <button type="submit" class="checkout-button">Realizar Pedido</button>
+            </form>
+            <button onclick="emptyCart('{{cartId}}')" class="checkout-button">Vaciar carrito</button>
+        </div>
+    </div>
+    {{else}}
+    <div class="noItemsCart">
+        <h2>No has agregado productos a tu carrito de compras</h2>
+    </div>
+    {{/if}}
 </div>
-{{/each}}
+<div class="btn_tienda-products"><a href="/products" class="btn">Tienda</a></div>
+
+<script src="/js/cart.js"></script>

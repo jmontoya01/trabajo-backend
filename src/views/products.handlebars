@@ -1,29 +1,15 @@
-{{!-- <h1> Productos </h1>
-{{#each products}}
-<div>
-    <h2>{{title}}</h2>
-    <p>{{description}}</p>
-    <p>Price: ${{price}}</p>
-    <p>Category: {{category}} </p>
-    <button> Agregar al Carrito </button>
+<div class="bienvenidaTienda">
+    <h1 class="text-center">Bienvenidos a la tienda</h1>
+    <a href="/carts/{{cartId}}" class="carritodecompras"> 
+        <i class="bi bi-cart-check-fill"></i>
+    </a>
+
 </div>
-{{/each}}
-
-
-{{#if hasNextPage}}
-<a href="/products?page={{nextPage}}"> Siguiente </a>
-{{/if}}
-{{#if hasPrevPage}}
-<a href="/products?page={{prevPage}}"> Anterior </a>
-{{/if}}
-
-<p>Pagina {{currentPage}} de {{totalPages}} </p> --}}
-<h1>Bienvenidos a la tienda</h1>
 
 <div class="products__containter">
     {{#each products}}
     <div class="card">
-        <h2>{{title}}</h2>
+        <h3>{{title}}</h3>
         <img src="{{thumbnails}}" alt="">
         <p>Descripción: {{description}} </p>
         <p>Precio: <strong>{{price}}</strong> </p>
@@ -35,11 +21,34 @@
     {{/each}}
 </div>
 <div class="container__login">
-{{#if hasNextPage}}
-<a href="/products?page={{nextPage}}" class="btnNextPrevius"> Siguiente </a>
-{{/if}}
-{{#if hasPrevPage}}
-<a href="/products?page={{prevPage}}" class="btnNextPrevius"> Anterior </a>
-{{/if}}
-<p class="paragrap">Pagina {{currentPage}} de {{totalPages}} </p>
+    {{#if hasNextPage}}
+    <a href="/products?page={{nextPage}}" class="btnNextPrevius"> Siguiente </a>
+    {{/if}}
+    {{#if hasPrevPage}}
+    <a href="/products?page={{prevPage}}" class="btnNextPrevius"> Anterior </a>
+    {{/if}}
+    <p class="paragrap">Pagina {{currentPage}} de {{totalPages}} </p>
 </div>
+
+<footer>
+    <ul class="footer__redes">
+        <li><a href="">Facebook</a></li>
+        <li><a href="">Instagram</a></li>
+        <li><a href="">Twitter</a></li>
+    </ul>
+    </div>
+    {{!-- <a
+        href="https://firebasestorage.googleapis.com/v0/b/proyecto-react-6bd56.appspot.com/o/ojos-transformed.jpeg?alt=media&token=bade8179-7c2c-446d-858a-b09377773c11">
+        <img class="logoFooter" src="./img/salvautos.jpg" alt="logo" loading="lazy"></a> --}}
+    <a href="/"><img
+            src="https://firebasestorage.googleapis.com/v0/b/proyecto-react-6bd56.appspot.com/o/ojos-transformed.jpeg?alt=media&token=bade8179-7c2c-446d-858a-b09377773c11"
+            alt="ojos de fuego" class="img"></a>
+    <address>
+        <ul class="footer_contactos">
+            <li><a href="">Carrito de compras</a></li>
+            <li><a href="">Hablar con un asesor</a></li>
+            <li><a href="">Dejarnos un mensaje</a></li>
+
+        </ul>
+    </address>
+</footer>
