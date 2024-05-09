@@ -17,7 +17,7 @@
         <h3>Resumen del Pedido</h3>
         <h3>Total: ${{totalPurchase}}</h3>
         <div class="cart-summary-button">
-            <form method="post" action="/api/carts/{{cartId}}/purchase">
+            <form method="post" action="/api/carts/{{cartId}}">
                 <button type="submit" class="checkout-button">Realizar Pedido</button>
             </form>
             <button onclick="emptyCart('{{cartId}}')" class="checkout-button">Vaciar carrito</button>

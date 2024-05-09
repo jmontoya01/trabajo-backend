@@ -1,34 +1,15 @@
-<div class="container__perfil">
-    {{!-- <h1>Mi Perfil</h1>
-    <h2>Bienvenido!!</h2>
-    <p>Nombre: {{user.first_name}} {{user.last_name}} </p>
-    <p>Email: {{user.email}}</p>
-    <p>Edad: {{user.age}}</p>
-    <p>usuario: {{user.role}}</p>  --}}
-
-    <div class="profile-card">
-    <img src="ruta-a-la-imagen.jpg" alt="Nombre del Usuario">
+<div class="profile-card">
     <div class="profile-info">
-        <div class="profile-name">{{user.first_name}} {{user.last_name}}</div>
-        <div class="profile-role">{{user.email}}</div>
+        <div class="profile-name">{{user.nombre}} {{user.apellido}}</div>
+        <div class="profile-role">{{user.correo}}</div>
         <div class="profile-role">{{user.role}}</div>
-        <p class="profile-description">
-            Breve descripción del usuario, sus intereses, o cualquier otra información relevante que quieras compartir.
-        </p>
     </div>
-</div>
-    
     {{#if isAdmin}}
-    <a href="/admin" class="btn">admin</a>
-    <a href="/api/users/logout" class="btn">Logout</a>
-    {{else}}
-    <a href="/chat" class="btn">Chat</a>
-    <a href="/products" class="btn">Tienda</a>
-    <a href="/api/users/logout" class="btn">Logout</a>
-    {{/if}}
+        <a href="/admin" class="btn">admin</a>
+        <a href="/api/users/logout" class="btn">Logout</a>
+        {{else}}
+        <a href="/chat" class="btn">Chat</a>
+        <a href="/products" class="btn">Tienda</a>
+        <a href="/api/users/logout" class="btn">Logout</a>
+        {{/if}}
 </div>
-
-
-
-
-

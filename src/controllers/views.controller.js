@@ -4,7 +4,9 @@ const CartRepository = require("../repositories/cart.repository.js");
 const cartRepository = new CartRepository();
 const Response = require("../utils/reusables.js");
 const productModel = require("../models/product.model.js");
+const userDTO = require("../dto/user.dto.js")
 const response = new Response();
+
 
 
 class ViewsController {
@@ -24,13 +26,14 @@ class ViewsController {
     };
 
     async renderProfile(req, res) {
+        
         const isAdmin = req.session.role === "admin"
-        const user = req.session.user
+        const userDto = new userDTO(req.session.user.first_name, req.session.user.last_name, req.session.user.email, req.session.user.role, req.session.user )
         try {
             if (!req.session.login) {
                 return res.redirect("/login")
             };
-            res.render("profile", { user: user, isAdmin });
+            res.render("profile", { user: userDto, isAdmin, });
         } catch (error) {
             console.error("Error al obtener el usuario", error);
             response.responseError(res, 500, "Error al obtener el usuario");
@@ -132,6 +135,7 @@ class ViewsController {
     async admin(req, res) {
         res.render("admin", { user: req.session.user });
     }
+
 };
 
 module.exports = ViewsController;

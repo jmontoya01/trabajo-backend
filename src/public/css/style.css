@@ -450,7 +450,7 @@ button:hover {
 
 /* Estilos generales para el perfil */
 .profile-card {
-    width: 300px;
+    width: 500px;
     /* Ajusta el ancho de la tarjeta según tus necesidades */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     /* Sombra ligera para destacar la tarjeta */
@@ -466,14 +466,6 @@ button:hover {
     /* Fondo blanco para la tarjeta */
 }
 
-.profile-card img {
-    width: 100%;
-    /* Asegura que la imagen cubra todo el ancho de la tarjeta */
-    height: 200px;
-    /* Altura fija para la imagen */
-    object-fit: cover;
-    /* Asegura que la imagen cubra completamente el espacio asignado sin deformarse */
-}
 
 .profile-card .profile-info {
     padding: 20px;
@@ -481,7 +473,7 @@ button:hover {
 }
 
 .profile-card .profile-name {
-    font-size: 22px;
+    font-size: 50px;
     /* Tamaño de fuente para el nombre */
     color: #333333;
     /* Color del texto del nombre */
@@ -490,7 +482,7 @@ button:hover {
 }
 
 .profile-card .profile-role {
-    font-size: 16px;
+    font-size: 40px;
     /* Tamaño de fuente para el rol */
     color: #666666;
     /* Color del texto del rol */
@@ -499,7 +491,7 @@ button:hover {
 }
 
 .profile-card .profile-description {
-    font-size: 14px;
+    font-size: 30px;
     /* Tamaño de la fuente para la descripción */
     color: #777777;
     /* Color del texto de la descripción */
