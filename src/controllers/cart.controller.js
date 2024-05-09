@@ -167,13 +167,14 @@ class CartController {
             // res.status(200).json({ unavailableProducts })
             await sendPurchaseEMail(userCart.email, userCart.first_name, ticket._id);
 
-            res.render("checkout", {
-                client: userCart.first_name,
-                email: userCart.email,
-                numTicket: ticket._id,
-                cart,
-                user: req.session.user
-            });
+            // res.render("checkout", {
+            //     client: userCart.first_name,
+            //     email: userCart.email,
+            //     numTicket: ticket._id,
+            //     cart,
+            //     user: req.session.user
+            // });
+            res.redirect(`/checkout/${ticket._id}`);
 
         } catch (error) {
             console.error("Error al finalizar la compra", error);

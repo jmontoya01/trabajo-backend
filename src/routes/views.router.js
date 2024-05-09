@@ -14,6 +14,7 @@ router.get("/", viewsController.renderIndex);
 router.get("/realtimeproducts", checkRole(["admin"]), viewsController.renderRealtimeproducts);
 router.get("/chat", checkRole(["user"]), viewsController.renderChat);
 router.get("/admin", checkRole(['admin']), viewsController.admin)
+router.get("/checkout/:coid", viewsController.checkout)
 
 
 

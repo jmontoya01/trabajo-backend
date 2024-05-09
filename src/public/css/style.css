@@ -591,7 +591,7 @@ footer {
     margin-top: 20px;
 }
 
-.cart-summary-button{
+.cart-summary-button {
     display: flex;
     justify-content: end;
     gap: 10px;
@@ -609,38 +609,33 @@ footer {
 
 /* checkout */
 /* Estilos Generales */
-/* body {
-    font-family: 'Arial', sans-serif;
-    background-color: #f6f6f6;
-    margin: 0;
-    padding: 0;
-} */
+
 
 /* Contenedor del Checkout */
-/* .checkout-wrapper {
+.checkout-wrapper {
     max-width: 800px;
     background: white;
     margin: 30px auto;
     padding: 20px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-} */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
 
 /* Encabezado del Checkout */
-/* .checkout-header {
+.checkout-header {
     border-bottom: 2px solid #efefef;
     padding-bottom: 20px;
     margin-bottom: 20px;
     text-align: center;
-} */
+}
 
 /* Títulos */
-/* .checkout-header h1 {
+.checkout-header h1 {
     font-size: 24px;
     color: #333;
-} */
+}
 
 /* Estilos de la lista de productos */
-/* .product-list {
+.product-list {
     margin-bottom: 20px;
 }
 
@@ -655,12 +650,13 @@ footer {
     border-bottom: none;
 }
 
-.product-name, .product-price {
+.product-name,
+.product-price {
     font-size: 16px;
-} */
+}
 
 /* Resumen del Pedido */
-/* .summary-section {
+.summary-section {
     text-align: right;
     padding-top: 10px;
 }
@@ -669,10 +665,10 @@ footer {
     font-size: 18px;
     font-weight: bold;
     color: #333;
-} */
+}
 
 /* Botones */
-/* .button {
+.button {
     background-color: #4CAF50;
     color: white;
     border: none;
@@ -687,14 +683,14 @@ footer {
 
 .button:hover {
     background-color: #45a049;
-} */
+}
 
 /* Pequeños ajustes */
-/* ul {
+ul {
     list-style-type: none;
     padding: 0;
 }
 
 li {
     padding: 8px;
-} */
+}

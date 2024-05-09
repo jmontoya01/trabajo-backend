@@ -4,7 +4,8 @@ const CartRepository = require("../repositories/cart.repository.js");
 const cartRepository = new CartRepository();
 const Response = require("../utils/reusables.js");
 const productModel = require("../models/product.model.js");
-const userDTO = require("../dto/user.dto.js")
+const userDTO = require("../dto/user.dto.js");
+const cartModel = require("../models/cart.model.js");
 const response = new Response();
 
 
@@ -134,6 +135,18 @@ class ViewsController {
 
     async admin(req, res) {
         res.render("admin", { user: req.session.user });
+    }
+
+    async checkout(req, res) {
+        const numTicket = req.params.coid;
+        const cart = await cartModel.findOne({_id: req.session.user.cart});
+        res.render("checkout", {
+                client: req.session.user.first_name,
+                email: req.session.user.email,
+                numTicket,
+                cart,
+                user: req.session.user
+            });
     }
 
 };

@@ -1,21 +1,18 @@
-<div class="cart-items">
+<div class="checkout-wrapper">
     <div class="checkout-header">
-        <h2>Checkout</h2>
+        <h1>Gracias por tu pedido</h1>
     </div>
-    <ul class="cart-item">
-        <li="product-item">
+    <ul class="product-list">
+        <li class="product-item">
             <span class="product-name">Nombre: {{client}}</span>
-        </li=>
-        <li="product-item">
+        </li>
+        <li class="product-item">
             <span class="product-name">Email: {{email}}</span>
-        </li=>
-        <li="product-item">
+        </li>
+        <li class="product-item">
             <span class="product-name">Número de ticket: {{numTicket}}</span>
-        </li=>
-        <li class="summary-section">
-            <p>Gracias por tu compra</p>
-            <div class="btn_tienda-products"><a href="/products" >Tienda</a></div>
-            <div class="btn_tienda-products"><a href="/api/users/profile">Perfil</a></div>
         </li>
     </ul>
+    <div class="btn"><a href="/products" >Tienda</a></div>
+            <div class="btn"><a href="/api/users/profile">Perfil</a></div>
 </div>
