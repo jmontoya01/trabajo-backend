@@ -1,0 +1,12 @@
+<div class="products__containter">
+    {{#each products}}
+    <div class="card">
+        <h3>{{products.title}}</h3>
+        <img src="{{thumbnails}}" alt="">
+        <p>Descripción: {{description}} </p>
+        <p>Precio: <strong>{{price}}</strong> </p>
+        <br>
+        <p>Categoria: {{category}} </p>
+    </div>
+    {{/each}}
+</div>

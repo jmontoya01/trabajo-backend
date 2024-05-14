@@ -15,7 +15,6 @@ const initializePassport = () => {
         callbackURL: "http://localhost:8080/api/sessions/githubcallback"
     }, async (accessToken, refreshToken, profile, done) => {
         try {
-            // console.log(profile);
             let user = await userModel.findOne({email: profile._json.email});
             if (!user) {
                 let newUser = {
@@ -44,7 +43,7 @@ const initializePassport = () => {
         try {
             let user = await userModel.findOne({email: username});
             if (user) {
-                console.log("El usuario ya esta registrado")
+                req.logger.warning("El usuario ya esta registrado")
                 return done(null, false);
             } 
 
@@ -73,7 +72,7 @@ const initializePassport = () => {
         try {
             const user = await userModel.findOne({email});
             if(user) {
-                console.log("Usuario no encontrado");
+                req.logger.warning("Usuario no encontrado");
                 return done(null, false);
             };
             if(!isValidPassword(password, user)) return done(null, false);

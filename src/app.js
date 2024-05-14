@@ -11,9 +11,11 @@ const initializePassport = require("./config/passport.config.js");
 const passport = require("passport");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
-const configObject = require("./config/config.js")
+const configObject = require("./config/config.js");
 const {port, mongo_url} = configObject;
-const compression = require("express-compression")
+const compression = require("express-compression");
+const handleError = require("./middleware/error.js");
+const addLogger = require("./utils/logger.js");
 require("./database.js");
 
 //Middlewares
@@ -23,6 +25,7 @@ app.use(express.static("./src/public"));
 app.use(cookieParser());
 app.use(cors());
 app.use(compression());
+app.use(addLogger);
 app.use(session ({
     secret: "secretCoder",
     resave: true,
@@ -48,7 +51,10 @@ app.set("views", "./src/views");
 app.use("/api/products", productsRouter);
 app.use("/api/carts", cartsRouter);
 app.use("/api/users", userRouter);
+app.use(handleError)
+
 app.use("/", viewsRouter);
+
 
 const hhtpServer = app.listen(port, () => {
     console.log(`Escuchando en puerto: ${port}`);
@@ -56,8 +62,3 @@ const hhtpServer = app.listen(port, () => {
 
 const SocketManager = require("./sockets/socketmanager.js");
 new SocketManager(hhtpServer);
-
-
-
-
-

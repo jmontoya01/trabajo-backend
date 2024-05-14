@@ -6,6 +6,7 @@ const Response = require("../utils/reusables.js");
 const productModel = require("../models/product.model.js");
 const userDTO = require("../dto/user.dto.js");
 const cartModel = require("../models/cart.model.js");
+const generate = require("../utils/faker.js");
 const response = new Response();
 
 
@@ -27,16 +28,16 @@ class ViewsController {
     };
 
     async renderProfile(req, res) {
-        
+
         const isAdmin = req.session.role === "admin"
-        const userDto = new userDTO(req.session.user.first_name, req.session.user.last_name, req.session.user.email, req.session.user.role, req.session.user )
+        const userDto = new userDTO(req.session.user.first_name, req.session.user.last_name, req.session.user.email, req.session.user.role, req.session.user)
         try {
             if (!req.session.login) {
                 return res.redirect("/login")
             };
             res.render("profile", { user: userDto, isAdmin, });
         } catch (error) {
-            console.error("Error al obtener el usuario", error);
+            req.logger.error("Error al obtener el usuario", error);
             response.responseError(res, 500, "Error al obtener el usuario");
         };
     };
@@ -75,7 +76,7 @@ class ViewsController {
             })
 
         } catch (error) {
-            console.log("Error al obtener los productos", error);
+            req.logger.error("Error al obtener los productos", error);
             response.responseError(res, 500, "Error al obtener los productos")
         }
     }
@@ -87,10 +88,10 @@ class ViewsController {
             const cart = await cartRepository.getCartById(cartId);
 
             if (!cart) {
-                console.log("No existe el carrito con el id ingresado");
+                req.logger.error("No existe el carrito con el id ingresado");
                 return response.responseError(res, 404, "El recurso solicitado no se pudo encontrar");
             };
-            
+
             let totalPurchase = 0;
 
             const productsInCart = cart.products.map(item => {
@@ -99,27 +100,27 @@ class ViewsController {
                 const totalPrice = product.price * quantity;
 
                 totalPurchase += totalPrice;
-                
+
                 return {
-                    product: {...product, totalPrice},
+                    product: { ...product, totalPrice },
                     quantity,
                     cartId
                 };
             });
-            res.render("carts", {products: productsInCart, totalPurchase, cartId, user: req.session.user});
+            res.render("carts", { products: productsInCart, totalPurchase, cartId, user: req.session.user });
         } catch (error) {
-            console.error("Error al obtener el carrito", error);
+            req.logger.error("Error al obtener el carrito", error);
             response.responseError(res, 500, "Error al obtener el carrito");
         };
     };
 
     async renderIndex(req, res) {
-        res.render("index", {user: req.session.user});
+        res.render("index", { user: req.session.user });
     };
 
     async renderRealtimeproducts(req, res) {
         try {
-            res.render("realtimeproducts", {user: req.session.user});
+            res.render("realtimeproducts", { user: req.session.user });
         } catch (error) {
             response.responseError(res, 500, "Error interno del servidor");
         };
@@ -139,14 +140,35 @@ class ViewsController {
 
     async checkout(req, res) {
         const numTicket = req.params.coid;
-        const cart = await cartModel.findOne({_id: req.session.user.cart});
+        const cart = await cartModel.findOne({ _id: req.session.user.cart });
         res.render("checkout", {
-                client: req.session.user.first_name,
-                email: req.session.user.email,
-                numTicket,
-                cart,
-                user: req.session.user
-            });
+            client: req.session.user.first_name,
+            email: req.session.user.email,
+            numTicket,
+            cart,
+            user: req.session.user
+        });
+    }
+
+    async mockingproducts(req, res) {
+        const products = [];
+
+        for (let i = 0; i < 100; i++) {
+            products.push(generate.generateProducts());
+
+        }
+        res.render("mockingproducts", { products: products, user: req.session.user });
+    };
+
+    async testLogger(req, res) {
+        req.logger.fatal("Error fatal");
+        req.logger.error("Mensaje de error");
+        req.logger.warning("Mensaje de warning");
+        req.logger.info("Mensaje de información");
+        req.logger.http("mensaje de http");
+        req.logger.debug("mensaje de debug");
+
+        res.send("Test de logs");
     }
 
 };

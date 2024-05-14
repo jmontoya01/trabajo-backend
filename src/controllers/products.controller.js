@@ -16,7 +16,7 @@ class ProductController {
             });
             res.json(products)
         } catch (error) {
-            console.error("Error al obtener productos", error);
+            req.logger.error("Error al obtener productos", error);
             response.responseError(res, 500, "Error interno del servidor");
         };
         
@@ -32,7 +32,7 @@ class ProductController {
             res.json(product);
 
         } catch (error) {
-            console.error("Error al obtener el producto con el id", error);
+            req.logger.error("Error al obtener el producto con el id", error);
             response.responseError(res, 500, "Error al obtener el producto con el id");
         };
     };
@@ -44,10 +44,10 @@ class ProductController {
             if (!result) {
                 response.responseError(res, 400, "Error al agregar el producto");
             }
-            console.log("Producto agregado exitosamente");
+            req.logger.info("Producto agregado exitosamente");
             res.json(result);
         } catch (error) {
-            console.error("Error al agregar el producto", error);
+            req.logger.error("Error al agregar el producto", error);
             response.responseError(res, 500, "Error al agregar el producto");
         };
     };
@@ -61,10 +61,10 @@ class ProductController {
                 return response.responseMessage(res, 404, "Producto no encontrado")
             }
             const productUpdate = await productRepository.updateProduct(product, updateProduct);
-            console.log("Producto actualizado con éxito");
+            req.logger.info("Producto actualizado con éxito");
             res.json(productUpdate);
         } catch (error) {
-            console.error("Error al actualizar el producto con el id", error);
+            req.logger.error("Error al actualizar el producto con el id", error);
             response.responseError(res, 404, "No existe un producto con ese ID, por favor envíe un ID válido");
         };
     };
@@ -81,7 +81,7 @@ class ProductController {
                 response.responseSucess(res, 200, "La solicitud ha tenido éxito y se ha eliminado el recurso como resultado");
             }
         } catch (error) {
-            console.error("Error al eliminar el producto", error);
+            req.logger.error("Error al eliminar el producto", error);
             response.responseError(res, 404, "No existe un producto con ese ID, por favor envíe un ID válido");
         };
     }

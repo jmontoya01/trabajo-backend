@@ -48,13 +48,16 @@ class UserController {
                     }
                         
                 } else {
+                    req.logger.warning("Contraseña no valida");
                     response.responseError(res, 401, "Contraseña no valida");
                 }
             } else {
+                req.logger.warning("Usuario no encontrado")
                 response.responseError(res, 404, "Usuario no encontrado");
             }
 
         } catch (error) {
+            req.logger.error("Error en el login")
             response.responseError(res, 400, "Error en el login");
         };
     };
