@@ -1,4 +1,5 @@
 const nodemailer = require("nodemailer");
+const logger = require("../utils/logger.js");
 
 const transporter = nodemailer.createTransport({
     service: "gmail",
@@ -23,7 +24,7 @@ async function sendPurchaseEMail(email, first_name, ticket) {
         };
         await transporter.sendMail(mailOptions);
     } catch (error) {
-        console.error("Error al enviar el correo electrónico: ", error);
+        logger.error("Error al enviar el correo electrónico: ", error);
     };
 };
 

@@ -4,6 +4,7 @@ const GitHubStrategy = require("passport-github2");
 const userModel = require("../models/user.model.js");
 const cartModel = require("../models/cart.model.js");
 const {createHash, isValidPassword} = require("../utils/hashBcrypt.js");
+const logger = require("../utils/logger.js");
 
 const LocalStrategy = local.Strategy;
 
@@ -30,6 +31,7 @@ const initializePassport = () => {
                 done(null, user);
             }
         } catch (error) {
+            logger.error("Error al iniciar sesión con Github")
             return done(error);
         }
     }))
@@ -43,7 +45,7 @@ const initializePassport = () => {
         try {
             let user = await userModel.findOne({email: username});
             if (user) {
-                req.logger.warning("El usuario ya esta registrado")
+                logger.warning("El usuario ya esta registrado");
                 return done(null, false);
             } 
 
@@ -62,7 +64,8 @@ const initializePassport = () => {
             let result = await userModel.create(newUser);
             return done(null, result);
         } catch (error) {
-            return done("Error al obtener el usuario " + error);
+            logger.error("Error al registrar el usuario");
+            return done("Error al registrar el usuario " + error);
         };
     }));
 
@@ -72,12 +75,13 @@ const initializePassport = () => {
         try {
             const user = await userModel.findOne({email});
             if(user) {
-                req.logger.warning("Usuario no encontrado");
+                logger.warning("Usuario no encontrado");
                 return done(null, false);
             };
             if(!isValidPassword(password, user)) return done(null, false);
             return(null, user)
         } catch (error) {
+            logger.error("Error al loguear el usuario");
             return done(error);
         };
     }));

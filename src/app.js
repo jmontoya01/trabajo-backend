@@ -15,7 +15,8 @@ const configObject = require("./config/config.js");
 const {port, mongo_url} = configObject;
 const compression = require("express-compression");
 const handleError = require("./middleware/error.js");
-const addLogger = require("./utils/logger.js");
+const addLogger = require("./middleware/logger-middleware.js");
+const logger = require("./utils/logger.js");
 require("./database.js");
 
 //Middlewares
@@ -57,7 +58,7 @@ app.use("/", viewsRouter);
 
 
 const hhtpServer = app.listen(port, () => {
-    console.log(`Escuchando en puerto: ${port}`);
+    logger.http(`Escuchando en puerto: ${port}`);
 });
 
 const SocketManager = require("./sockets/socketmanager.js");

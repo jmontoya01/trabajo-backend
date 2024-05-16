@@ -17,6 +17,7 @@ router.get("/admin", checkRole(['admin']), viewsController.admin)
 router.get("/checkout/:coid", checkRole(["user"]), viewsController.checkout)
 router.get("/mockingproducts", checkRole(['admin']), viewsController.mockingproducts);
 router.get("/loggertest", viewsController.testLogger);
+router.get("/failregister", viewsController.failregister);
 
 
 

@@ -2,6 +2,8 @@ const socket = require("socket.io");
 const ProductRepository = require("../repositories/product.repository.js");
 const productRepository = new ProductRepository();
 const messageModel = require("../models/messages.model.js");
+const logger = require("../utils/logger.js");
+
 
 
 class SocketManager {
@@ -12,7 +14,7 @@ class SocketManager {
 
     async initSocketEvents() {
         this.io.on("connection", async (socket) => {
-            console.log("Un cliente se conecto");
+            logger.http("Un cliente se conecto");
         
             socket.emit("products", await productRepository.getProducts());
         

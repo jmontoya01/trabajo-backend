@@ -2,6 +2,11 @@ const UserModel = require("../models/user.model.js");
 const { isValidPassword } = require("../utils/hashBcrypt.js");
 const Response = require("../utils/reusables.js")
 const response = new Response();
+const CustomError = require("../utils/errors/custom-error.js");
+const { credentialsMessage } = require("../utils/errors/info.js");
+const { Errors } = require("../utils/errors/enums.js");
+const logger = require("../utils/logger.js");
+
 
 
 class UserController {
@@ -44,20 +49,24 @@ class UserController {
                     if (user.role === "admin") {
                         res.redirect("/admin");
                     } else {
-                        res.redirect("/profile");
+                        res.redirect("/login");
                     }
                         
                 } else {
-                    req.logger.warning("Contraseña no valida");
-                    response.responseError(res, 401, "Contraseña no valida");
+                    throw CustomError.createError({
+                        name: "Login de usuario fallido",
+                        cause: credentialsMessage(),
+                        message: "Error de credenciales",
+                        code: Errors.INVALID_CREDENTIALS
+                    })
                 }
             } else {
-                req.logger.warning("Usuario no encontrado")
+                logger.warning("Usuario no encontrado")
                 response.responseError(res, 404, "Usuario no encontrado");
             }
 
         } catch (error) {
-            req.logger.error("Error en el login")
+            logger.error("Error en el login", error)
             response.responseError(res, 400, "Error en el login");
         };
     };

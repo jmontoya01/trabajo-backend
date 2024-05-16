@@ -6,7 +6,7 @@ const passport = require("passport");
 
 
 
-router.post("/", passport.authenticate("register", {failureRedirect: "/failregister"}), userController.passportRegister);
+router.post("/", passport.authenticate("register", {failureRedirect: "user/failregister"}), userController.passportRegister);
 router.get("/failregister", userController.failregister);
 router.post("/login", userController.login);
 router.get("/logout", userController.logout);

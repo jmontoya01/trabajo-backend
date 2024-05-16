@@ -5,20 +5,25 @@ const userModel = require("../models/user.model.js");
 const CartRepository = require("../repositories/cart.repository.js");
 const cartRepository = new CartRepository();
 const ProductRepository = require("../repositories/product.repository.js");
+const productRepository = new ProductRepository();
 const { generateUniqueCode, calculateTotal } = require("../utils/cartutils.js");
 const { sendPurchaseEMail } = require("../utils/email.js");
-const productRepository = new ProductRepository();
+const CustomError = require("../utils/errors/custom-error.js");
+const { errorCartId } = require("../utils/errors/info.js");
+const { Errors } = require("../utils/errors/enums.js");
 const Response = require("../utils/reusables.js");
 const response = new Response();
+const logger = require("../utils/logger.js");
+
 
 class CartController {
     async newCart(req, res) {
         try {
             const newCart = await cartRepository.createCart();
-            req.logger.info("Carrito creado correctamente");
+            logger.info("Carrito creado correctamente");
             return res.json(newCart);
         } catch (error) {
-            req.logger.error("Error al crear el carrito", error);
+            logger.error("Error al crear el carrito", error);
             response.responseError(res, 500, "Error interno del servidor");
         };
     };
@@ -28,13 +33,17 @@ class CartController {
         try {
             const cart = await cartRepository.getCartById(cartId);
             if (!cart) {
-                req.logger.warning("No encontramos el carrito con el id");
-                return response.responseError(res, 404, " El recurso solicitado no se pudo encontrar.")
+                throw CustomError.createError({
+                    name: "ID Inválido de carrito",
+                    cause: errorCartId(cartId),
+                    message: "El ID del carrito enviado no es correcto",
+                    code: Errors.ERROR_CART_ID
+                });
             }
-            req.logger.info("carrito encontrado con éxito");
+            logger.info("carrito encontrado con éxito");
             return res.json(cart.products)
         } catch (error) {
-            req.logger.error("Error al obtener el carrito", error);
+            logger.error("Error al obtener el carrito", error);
             response.responseError(res, 500, "Error al obtener el carrito");
         };
     };
@@ -56,10 +65,10 @@ class CartController {
             await cartRepository.addProductToCart(cart, product, quantity);
             const cartID = (req.session.user.cart).toString();
             res.redirect(`/carts/${cartID}`);
-            req.logger.info("Producto agregado al carrito correctamente");
+            logger.info("Producto agregado al carrito correctamente");
             // res.json(productInCart)
         } catch (error) {
-            req.logger.error("Error al agregar productos al carrito", error);
+            logger.error("Error al agregar productos al carrito", error);
             response.responseError(res, 500, "Error al agregar productos al carrito");
         };
     };
@@ -69,10 +78,10 @@ class CartController {
         const productId = req.params.pid;
         try {
             const updateCart = await cartRepository.deleteProductFromCart(cartId, productId);
-            req.logger.info("Producto eliminado del carrito con éxito");
+            logger.info("Producto eliminado del carrito con éxito");
             res.json(updateCart);
         } catch (error) {
-            console.error("Error al eliminar un producto del carrito", error);
+            logger.error("Error al eliminar un producto del carrito", error);
             response.responseError(res, 500, "Error al eliminar un producto del carrito");
         };
     };
@@ -87,10 +96,10 @@ class CartController {
                 response.responseMessage(res, 404, "Carrito no encontrado");
             }
             const updateCart = await cartRepository.updateProductsInCart(cart, updateProducts);
-            req.logger.info("Producto actualizado con éxito");
+            logger.info("Producto actualizado con éxito");
             res.json(updateCart);
         } catch (error) {
-            req.logger.error("Error al actualizar los productos", error);
+            logger.error("Error al actualizar los productos", error);
             response.responseError(res, 500, "Error al actualizar los productos");
         };
     };
@@ -103,17 +112,19 @@ class CartController {
             const cart = await cartModel.findOne({ _id: cartId })
             const product = await productModel.findOne({ _id: productId })
             if (!cart) {
+                logger.warning("Carrito no encontrado");
                 response.responseMessage(res, 404, "Carrito no encontrado");
             }
             if (!product) {
+                logger.warning("Producto no encontrado");
                 response.responseMessage(res, 404, "Producto no encontrado");
             }
 
             const updateCart = await cartRepository.updateProductQuantity(cart, product, newQuantity);
-            req.logger.info("Cantidad del producto actualizada correctamente");
+            logger.info("Cantidad del producto actualizada correctamente");
             res.json(updateCart);
         } catch (error) {
-            req.logger.error("Error al actualizar la cantidad del producto");
+            logger.error("Error al actualizar la cantidad del producto");
             response.responseError(res, 500, "Error al actualizar la cantidad del producto", error)
         };
     };
@@ -123,13 +134,14 @@ class CartController {
         try {
             const cart = await cartModel.findOne({ _id: cartId })
             if (!cart) {
+                logger.warning("Carrito no encontrado");
                 response.responseMessage(res, 404, "Carrito no encontrado");
             }
             const updateCart = cartRepository.emptyCart(cart);
-            req.logger.info("Carrito eliminado con éxito!");
+            logger.info("Carrito eliminado con éxito!");
             res.json(updateCart);
         } catch (error) {
-            req.logger.error("Error al vaciar el carrito");
+            logger.error("Error al vaciar el carrito");
             response.responseError(res, 500, "Error al vaciar el carrito", error);
         };
     };
@@ -164,20 +176,13 @@ class CartController {
 
             cart.products = cart.products.filter(item => unavailableProducts.some(productId => productId.equals(item.product)));//elinamos del carrito los productos que sí se compraron
             await cart.save();//guardamos el carrito actualizado en la base de datos
-            // res.status(200).json({ unavailableProducts })
+
             await sendPurchaseEMail(userCart.email, userCart.first_name, ticket._id);
 
-            // res.render("checkout", {
-            //     client: userCart.first_name,
-            //     email: userCart.email,
-            //     numTicket: ticket._id,
-            //     cart,
-            //     user: req.session.user
-            // });
             res.redirect(`/checkout/${ticket._id}`);
 
         } catch (error) {
-            console.error("Error al finalizar la compra", error);
+            logger.error("Error al finalizar la compra", error);
             response.responseError(req, 500, "Error al procesar la compra");
         }
     }

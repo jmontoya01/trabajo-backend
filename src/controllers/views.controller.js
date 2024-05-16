@@ -8,6 +8,7 @@ const userDTO = require("../dto/user.dto.js");
 const cartModel = require("../models/cart.model.js");
 const generate = require("../utils/faker.js");
 const response = new Response();
+const logger = require("../utils/logger.js");
 
 
 
@@ -15,15 +16,12 @@ class ViewsController {
 
     async renderLogin(req, res) {
         if (req.session.login) {
-            return res.redirect("/profile"); //con .redirect redirigimos a la ruta especificada
+            return res.redirect("/"); //con .redirect redirigimos a la ruta especificada
         }
         res.render("login");
     };
 
     async renderRegister(req, res) {
-        if (req.session.login) {
-            return res.redirect("/profile");
-        }
         res.render("register");
     };
 
@@ -37,7 +35,7 @@ class ViewsController {
             };
             res.render("profile", { user: userDto, isAdmin, });
         } catch (error) {
-            req.logger.error("Error al obtener el usuario", error);
+            logger.error("Error al obtener el usuario", error);
             response.responseError(res, 500, "Error al obtener el usuario");
         };
     };
@@ -76,7 +74,7 @@ class ViewsController {
             })
 
         } catch (error) {
-            req.logger.error("Error al obtener los productos", error);
+            logger.error("Error al obtener los productos", error);
             response.responseError(res, 500, "Error al obtener los productos")
         }
     }
@@ -88,7 +86,7 @@ class ViewsController {
             const cart = await cartRepository.getCartById(cartId);
 
             if (!cart) {
-                req.logger.error("No existe el carrito con el id ingresado");
+                logger.warning("No existe el carrito con el id ingresado");
                 return response.responseError(res, 404, "El recurso solicitado no se pudo encontrar");
             };
 
@@ -109,7 +107,7 @@ class ViewsController {
             });
             res.render("carts", { products: productsInCart, totalPurchase, cartId, user: req.session.user });
         } catch (error) {
-            req.logger.error("Error al obtener el carrito", error);
+            logger.error("Error al obtener el carrito", error);
             response.responseError(res, 500, "Error al obtener el carrito");
         };
     };
@@ -122,7 +120,8 @@ class ViewsController {
         try {
             res.render("realtimeproducts", { user: req.session.user });
         } catch (error) {
-            response.responseError(res, 500, "Error interno del servidor");
+            logger.error("Error al obtener la ruta", error);
+            response.responseError(res, 500, "Error al intentar renderizar la ruta");
         };
     };
 
@@ -130,7 +129,8 @@ class ViewsController {
         try {
             res.render("chat");
         } catch (error) {
-            response.responseError(res, 500, "Error interno del servidor");
+            logger.error("Error al obtener el chat", error);
+            response.responseError(res, 500, "Error al tratar de renderizar el chat");
         };
     };
 
@@ -161,14 +161,18 @@ class ViewsController {
     };
 
     async testLogger(req, res) {
-        req.logger.fatal("Error fatal");
-        req.logger.error("Mensaje de error");
-        req.logger.warning("Mensaje de warning");
-        req.logger.info("Mensaje de información");
-        req.logger.http("mensaje de http");
-        req.logger.debug("mensaje de debug");
+        logger.fatal("Error fatal");
+        logger.error("Mensaje de error");
+        logger.warning("Mensaje de warning");
+        logger.info("Mensaje de información");
+        logger.http("mensaje de http");
+        logger.debug("mensaje de debug");
 
         res.send("Test de logs");
+    }
+
+    async failregister(req, res) {
+        res.render("failregister");
     }
 
 };

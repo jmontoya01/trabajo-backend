@@ -1,8 +1,8 @@
 class userDTO {
     constructor(firstName, lastName, email, role) {
-        this.nombre = firstName;
-        this.apellido = lastName;
-        this.correo = email
+        this.name = firstName;
+        this.lastName = lastName;
+        this.email = email
 
         this.role = role;
     }

@@ -67,12 +67,5 @@ const loggerProduct = winston.createLogger({
 const logger = node_env === "production" ? loggerProduct : loggerDev;
 
 
-//a partir de un middleware, vamos a colocar en el objeto req el logger, aremos nuestro primer log
-const addLogger = (req, res, next) => {
-    req.logger = logger;
-    req.logger.http(`${req.method} en ${req.url} - ${new Date().toLocaleTimeString()}`);
-    next()
-};
-
-module.exports = addLogger;
+module.exports = logger;
 

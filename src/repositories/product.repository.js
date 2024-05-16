@@ -1,4 +1,5 @@
 const productModel = require("../models/product.model.js");
+const logger = require("../utils/logger.js");
 
 class ProductRepository {
     async addProduct({ title, description, price, code, stock, category, thumbnails }) {
@@ -6,14 +7,14 @@ class ProductRepository {
         try {
 
             if (!title || !description || !price || !code || !stock || !category) {
-                console.log("Todos los campos son obligatorios para continuar");
+                logger.warning("Todos los campos son obligatorios para continuar");
                 return;
             }
 
             const existProduct = await productModel.findOne({ code: code });
 
             if (existProduct) {
-                console.log("El valor de ese code ya existe y no puede repetirse, ingrese otro code")
+                logger.warning("El valor de ese code ya existe y no puede repetirse, ingrese otro code")
                 return;
             }
 
@@ -32,7 +33,7 @@ class ProductRepository {
             return newProduct;
 
         } catch (error) {
-            console.log("Error al agregar producto", error);
+            logger.error("Error al agregar producto", error);
             throw new Error("Error al agregar un nuevo producto");
         }
     }
@@ -77,7 +78,7 @@ class ProductRepository {
             };
 
         } catch (error) {
-            console.log("Error al obtener los productos", error);
+            logger.error("Error al obtener los productos", error);
             throw new Error("Error al obtener los productos");
         }
     };
@@ -87,14 +88,14 @@ class ProductRepository {
             const product = await productModel.findById(id)
 
             if (!product) {
-                console.log("Producto no encontrado");
+                logger.warning("Producto no encontrado");
                 return 
             };
 
-            console.log("Producto encontrado con éxito!");
+            logger.info("Producto encontrado con éxito!");
             return product;
         } catch (error) {
-            console.log("Error al buscar el producto con el id", error);
+            logger.error("Error al buscar el producto con el id", error);
             throw new Error("Error al buscar el producto por id");
         }
     };
@@ -103,12 +104,12 @@ class ProductRepository {
         try {
             const productUpdated = await productModel.findByIdAndUpdate(id, productUpdate);
             if (!productUpdated) {
-                console.log("No se encontro el producto");
+                logger.warning("No se encontro el producto");
             };
-            console.log("Producto actualizado con éxito!");
+            logger.info("Producto actualizado con éxito!");
             return productUpdated;
         } catch (error) {
-            console.log("Error al actualizar el producto", error);
+            logger.error("Error al actualizar el producto", error);
             throw new Error("Error al actualizar el producto");
         };
     };
@@ -118,13 +119,13 @@ class ProductRepository {
             const deleted = await productModel.findByIdAndDelete(id);;
 
             if (!deleted) {
-                console.log("No se encuentra el producto con el id");
+                logger.warning("No se encuentra el producto con el id");
             }
 
-            console.log("Producto eliminado con éxito!");
+            logger.info("Producto eliminado con éxito!");
             return deleted;
         } catch (error) {
-            console.log("Error al eliminar el producto", error);
+            logger.error("Error al eliminar el producto", error);
             throw new Error("Error al eliminar el producto");
         };
     };
