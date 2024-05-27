@@ -246,7 +246,25 @@ a {
     background-color: #f2f2f2;
 }
 
-hermosa
+.resetPassword{
+    color: #e60023;
+}
+
+.error-message{
+    text-align: center;
+}
+
+.form-password{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    gap: 5px;
+    padding: 20px;
+    border-radius: 6px;
+    background-color: #f2f2f2;
+}
 
 .h1__login {
     text-align: center;

@@ -18,6 +18,10 @@ router.get("/checkout/:coid", checkRole(["user"]), viewsController.checkout)
 router.get("/mockingproducts", checkRole(['admin']), viewsController.mockingproducts);
 router.get("/loggertest", viewsController.testLogger);
 router.get("/failregister", viewsController.failregister);
+router.get("/reset-password", viewsController.renderResetPassword);
+router.get("/confirmationmail", viewsController.confirmationmail);
+router.get("/password", viewsController.changePassword);
+
 
 
 

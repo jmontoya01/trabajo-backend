@@ -52,9 +52,10 @@ app.set("views", "./src/views");
 app.use("/api/products", productsRouter);
 app.use("/api/carts", cartsRouter);
 app.use("/api/users", userRouter);
+app.use("/", viewsRouter);
 app.use(handleError)
 
-app.use("/", viewsRouter);
+
 
 
 const hhtpServer = app.listen(port, () => {

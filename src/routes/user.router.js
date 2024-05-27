@@ -12,6 +12,8 @@ router.post("/login", userController.login);
 router.get("/logout", userController.logout);
 router.get("/github", passport.authenticate("github", {scope:["user:email"]}), async (req, res) => {});
 router.get("/githubcallback", passport.authenticate("github", {failureRedirect: "/login"}), userController.githubcallback);
+router.post("/requestpasswordreset", userController.requestpasswordreset);
+router.post("/reset-password", userController.resetpassword);
 
 
 module.exports = router;

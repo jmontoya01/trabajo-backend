@@ -173,6 +173,18 @@ class ViewsController {
 
     async failregister(req, res) {
         res.render("failregister");
+    };
+
+    async renderResetPassword(req, res) {
+        res.render("resetpassword");
+    };
+
+    async confirmationmail(req, res) {
+        res.render("confirmationmail");
+    };
+
+    async changePassword(req, res) {
+        res.render("changePassword");
     }
 
 };
