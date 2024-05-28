@@ -5,6 +5,10 @@
     box-sizing: border-box;
 }
 
+body {
+    font-family: 'Roboto', sans-serif;
+}
+
 /* //////////////// */
 h1 {
     color: coral;
@@ -119,8 +123,22 @@ nav ul {
     box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
     background-color: #fff;
-    overflow:unset;
+    overflow: unset;
     line-height: 1;
+}
+
+.card_realtime {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 300px;
+    padding: 10px;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.3);
+    border-radius: 8px;
+}
+
+.realtimeproducts-data {
+    text-align: center;
 }
 
 
@@ -246,15 +264,15 @@ a {
     background-color: #f2f2f2;
 }
 
-.resetPassword{
+.resetPassword {
     color: #e60023;
 }
 
-.error-message{
+.error-message {
     text-align: center;
 }
 
-.form-password{
+.form-password {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -302,6 +320,9 @@ button:hover {
 
 #containerProducts {
     display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
 }
 
 .container__form {

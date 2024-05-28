@@ -1,4 +1,6 @@
 const socket = io();
+const role = document.getElementById("role").textContent;
+const email = document.getElementById("email").textContent;
 
 socket.on("products", (data) => {
     renderProducts(data);
@@ -8,21 +10,32 @@ socket.on("products", (data) => {
 //mostrar productos
 const renderProducts = (products) => {
     const containerProducts = document.getElementById("containerProducts");
+    
     containerProducts.innerHTML = "";
 
     products.docs.forEach(item => {
         const card = document.createElement("div");
-        card.classList.add("card");
+        card.classList.add("card_realtime");//voy en buscar como renderizar todos los productos en realtimeproducts
 
         card.innerHTML = `
-                <p>ID: ${item._id} </p>
-                <p>Titulo ${item.title} </p>
-                <p>Precio ${item.price} </p>
+                <p class="card-p"> ID: ${item._id} </p>
+                <p class="card-p">Titulo: ${item.title} </p>
+                <p class="card-p">Precio: ${item.price} </p>
                 <button class="btn"> Eliminar Producto </button>
         `;
         containerProducts.appendChild(card);
         card.querySelector("button").addEventListener("click", () => {
-            deleteProduct(item._id);
+            if (role === "premium" && item.owner === email) {
+                deleteProduct(item._id);
+            } else if( role === "admin") {
+                deleteProduct(item._id);
+            } else {
+                Swal.fire({
+                    title: 'Error',
+                    text: "No tiene los permisos para borrar ese producto"
+                });
+            };
+            
         });
     });
 };
@@ -38,7 +51,11 @@ document.getElementById("btnSend").addEventListener("click", () => {
 });
 
 const addProduct = () => {
+    const role = document.getElementById("role").textContent
+    const email = document.getElementById("email").textContent
 
+    const owner = role === "premium" ? email : "admin";
+    
     const product = {
         title: document.getElementById("title").value,
         description: document.getElementById("description").value,
@@ -47,7 +64,8 @@ const addProduct = () => {
         code: document.getElementById("code").value,
         stock: document.getElementById("stock").value,
         category: document.getElementById("category").value,
-        status: document.getElementById("status").value === "true"
+        status: document.getElementById("status").value === "true",
+        owner
     };
     socket.emit("addProduct", product);
 };

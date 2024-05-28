@@ -14,6 +14,7 @@ router.get("/github", passport.authenticate("github", {scope:["user:email"]}), a
 router.get("/githubcallback", passport.authenticate("github", {failureRedirect: "/login"}), userController.githubcallback);
 router.post("/requestpasswordreset", userController.requestpasswordreset);
 router.post("/reset-password", userController.resetpassword);
+router.put("/premium/:uid", userController.changeRolPremium);
 
 
 module.exports = router;

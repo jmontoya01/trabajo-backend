@@ -28,12 +28,13 @@ class ViewsController {
     async renderProfile(req, res) {
 
         const isAdmin = req.session.role === "admin"
+        const isPremium = req.session.role === "premium"
         const userDto = new userDTO(req.session.user.first_name, req.session.user.last_name, req.session.user.email, req.session.user.role, req.session.user)
         try {
             if (!req.session.login) {
                 return res.redirect("/login")
             };
-            res.render("profile", { user: userDto, isAdmin, });
+            res.render("profile", { user: userDto, isAdmin, isPremium});
         } catch (error) {
             logger.error("Error al obtener el usuario", error);
             response.responseError(res, 500, "Error al obtener el usuario");
@@ -117,8 +118,9 @@ class ViewsController {
     };
 
     async renderRealtimeproducts(req, res) {
+        const user = req.session.user
         try {
-            res.render("realtimeproducts", { user: req.session.user });
+            res.render("realtimeproducts", {user: user, first_name: user.first_name, role: user.role, email: user.email});
         } catch (error) {
             logger.error("Error al obtener la ruta", error);
             response.responseError(res, 500, "Error al intentar renderizar la ruta");
@@ -135,7 +137,9 @@ class ViewsController {
     };
 
     async admin(req, res) {
-        res.render("admin", { user: req.session.user });
+        const isAdmin = req.session.role === "admin"
+        const isPremium = req.session.role === 'premium';
+        res.render("admin", { user: req.session.user}, isAdmin, isPremium );
     }
 
     async checkout(req, res) {

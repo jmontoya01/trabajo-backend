@@ -1,4 +1,9 @@
 <h1>Modificar Productos</h1>
+<div class="realtimeproducts-data">
+<h2>Hola: {{first_name}}</h2>
+<h3 id="role">{{role}}</h3>
+<h3 id="email">{{email}}</h3>
+</div>
 
 <div id="containerProducts"></div>
 
@@ -21,17 +26,6 @@
     </form>
 </div>
 
-<div class="container__login">
-{{#if hasNextPage}}
-<a href="/products?page={{nextPage}}" class="btnNextPrevius"> Siguiente </a>
-{{/if}}
-{{#if hasPrevPage}}
-<a href="/products?page={{prevPage}}" class="btnNextPrevius"> Anterior </a>
-{{/if}}
-<p class="paragrap">Pagina {{currentPage}} de {{totalPages}} </p>
-</div>
-
-
-
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.2/socket.io.min.js"></script>
 <script src="js/index.js"></script>

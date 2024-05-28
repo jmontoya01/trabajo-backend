@@ -2,7 +2,7 @@ const productModel = require("../models/product.model.js");
 const logger = require("../utils/logger.js");
 
 class ProductRepository {
-    async addProduct({ title, description, price, code, stock, category, thumbnails }) {
+    async addProduct({ title, description, price, code, stock, category, thumbnails, owner }) {
 
         try {
 
@@ -26,7 +26,8 @@ class ProductRepository {
                 stock,
                 category,
                 status: true,
-                thumbnails: thumbnails || []
+                thumbnails: thumbnails || [],
+                owner
             });
 
             await newProduct.save();
@@ -38,7 +39,7 @@ class ProductRepository {
         }
     }
 
-    async getProducts({ limit = 10, page = 1, sort, query } = {}) {
+    async getProducts({ limit , page = 1, sort, query } = {}) {
         try {
             const skip = (page - 1) * limit;
 

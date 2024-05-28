@@ -8,13 +8,13 @@ const viewsController = new ViewsController();
 router.get("/login", viewsController.renderLogin);
 router.get("/register", viewsController.renderRegister);
 router.get("/profile",  viewsController.renderProfile);
-router.get("/products", checkRole(["user"]), viewsController.renderProducts);
+router.get("/products", checkRole(["user", "premium"]), viewsController.renderProducts);
 router.get("/carts/:cid", viewsController.renderCarts);
 router.get("/", viewsController.renderIndex);
-router.get("/realtimeproducts", checkRole(["admin"]), viewsController.renderRealtimeproducts);
+router.get("/realtimeproducts", checkRole(["admin", "premium"]), viewsController.renderRealtimeproducts);
 router.get("/chat", checkRole(["user"]), viewsController.renderChat);
 router.get("/admin", checkRole(['admin']), viewsController.admin)
-router.get("/checkout/:coid", checkRole(["user"]), viewsController.checkout)
+router.get("/checkout/:coid", checkRole(["user", "premium"]), viewsController.checkout)
 router.get("/mockingproducts", checkRole(['admin']), viewsController.mockingproducts);
 router.get("/loggertest", viewsController.testLogger);
 router.get("/failregister", viewsController.failregister);

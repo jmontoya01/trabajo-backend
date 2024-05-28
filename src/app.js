@@ -12,7 +12,7 @@ const passport = require("passport");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const configObject = require("./config/config.js");
-const {port, mongo_url} = configObject;
+const { port, mongo_url } = configObject;
 const compression = require("express-compression");
 const handleError = require("./middleware/error.js");
 const addLogger = require("./middleware/logger-middleware.js");
@@ -20,20 +20,20 @@ const logger = require("./utils/logger.js");
 require("./database.js");
 
 //Middlewares
-app.use(express.urlencoded({extended:true}));
+app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static("./src/public"));
 app.use(cookieParser());
 app.use(cors());
 app.use(compression());
 app.use(addLogger);
-app.use(session ({
+app.use(session({
     secret: "secretCoder",
     resave: true,
     saveUninitialized: true,
     cookie: { maxAge: 7200000 },
     store: MongoStore.create({
-        mongoUrl:mongo_url,
+        mongoUrl: mongo_url,
         ttl: 100//ttl: expires basado en ttl y se encarga de limpiar autamaticamente una vez q pase el tiempo de expires
     })
 }));
@@ -44,7 +44,17 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 //handlebars
-app.engine("handlebars", exphbs.engine());
+app.engine("handlebars", exphbs.engine({
+    helpers: {
+        // Definiendo un helper personalizado para condicionales
+        eq: function (v1, v2, options) {
+            if (v1 === v2) {
+                return options.fn(this);
+            }
+            return options.inverse(this);
+        }
+    }
+}));
 app.set("view engine", "handlebars");
 app.set("views", "./src/views");
 

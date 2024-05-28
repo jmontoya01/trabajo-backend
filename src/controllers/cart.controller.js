@@ -62,6 +62,9 @@ class CartController {
             if (!product) {
                 response.responseMessage(res, 404, "Producto no encontrado");
             }
+            if (product.owner === req.session.user.email) {
+                return response.responseMessage(res, 404, "No puedes agregar tus productos al carrito");
+            }
             await cartRepository.addProductToCart(cart, product, quantity);
             const cartID = (req.session.user.cart).toString();
             res.redirect(`/carts/${cartID}`);

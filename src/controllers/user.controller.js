@@ -7,13 +7,13 @@ const { credentialsMessage } = require("../utils/errors/info.js");
 const { Errors } = require("../utils/errors/enums.js");
 const logger = require("../utils/logger.js");
 const generateToken = require("../utils/resetToken.js");
-const {sendResetMail} = require("../utils/email.js")
+const { sendResetMail } = require("../utils/email.js")
 
 
 
 class UserController {
     async passportRegister(req, res) {
-        
+
         if (!req.user) return response.responseError(res, 400, "Credenciales invalidas");
 
         req.session.user = {
@@ -35,8 +35,8 @@ class UserController {
     async login(req, res) {
         const { email, password } = req.body;
         try {
-            const user = await UserModel.findOne({email});
-            
+            const user = await UserModel.findOne({ email });
+
             if (user) {
                 if (isValidPassword(password, user)) {
                     req.session.login = true;
@@ -53,7 +53,7 @@ class UserController {
                     } else {
                         res.redirect("/login");
                     }
-                        
+
                 } else {
                     throw CustomError.createError({
                         name: "Login de usuario fallido",
@@ -87,9 +87,9 @@ class UserController {
     };
 
     async requestpasswordreset(req, res) {
-        const {email} = req.body;
+        const { email } = req.body;
         try {
-            const user = await UserModel.findOne({email});//buscamos el usuario en la base de datos
+            const user = await UserModel.findOne({ email });//buscamos el usuario en la base de datos
             if (!user) {
                 logger.warning("Usuario no encontrado");//validamos que si este
                 response.responseError(res, 400, "Usuario no encontrado")
@@ -110,18 +110,18 @@ class UserController {
     };
 
     async resetpassword(req, res) {
-        const {email, password, token} = req.body;
+        const { email, password, token } = req.body;
 
         try {
-            const user = await UserModel.findOne({email});
+            const user = await UserModel.findOne({ email });
             if (!user) {
                 logger.warning("Usuario no encontrado");//buscamos usuario y verificamos que si este en la BD
-                return res.render("changepassword", {error: "Usuario no encontrado"})
+                return res.render("changepassword", { error: "Usuario no encontrado" });
             };
             const resetToken = user.resetToken;//obtenemos el token de restablecimiento y lo validamos
 
             if (!resetToken || resetToken.token !== token) {
-                return res.render("resetpassword", {error: "El token de restablecimiento de contraseña no es valido"})
+                return res.render("resetpassword", { error: "El token de restablecimiento de contraseña no es valido" });
             }
 
             const now = new Date();
@@ -130,7 +130,7 @@ class UserController {
             }
 
             if (isValidPassword(password, user)) {//verificamos si la contraseña es igual a la anterior
-                return res.render("changepassword", {error: "La nueva contraseña no puede ser igual a la anterior"});
+                return res.render("changepassword", { error: "La nueva contraseña no puede ser igual a la anterior" });
             }
 
             user.password = createHash(password);//actualizamos contraseña del usuario
@@ -142,7 +142,27 @@ class UserController {
             logger.error("Error al intentar cambiar la contraseña", error);
             response.responseError(res, 400, "Error al intentar cambiar la contraseña");
         }
+    };
+
+    async changeRolPremium(req, res) {
+        try {
+            const { uid } = req.params;
+            const user = await UserModel.findById(uid);
+
+            if (!user) {
+                response.responseError(res, 404, "Usuario no encontrado");
+            }
+
+            const newRol = user.role === 'user' ? 'premium' : 'user';
+            const updateRol = await UserModel.findByIdAndUpdate(uid, { role: newRol }, { new: true });
+            res.json(updateRol)
+        } catch (error) {
+            logger.error("Error al intentar cambiar el rol", error);
+            response.responseError(res, 400, "Error al intentar cambiar el rol");
+        }
     }
+
+
 };
 
 module.exports = UserController;
