@@ -1,0 +1,212 @@
+paths:
+  /api/users:
+    post:
+      summary: Registrar un nuevo usuario
+      tags:
+        - Users
+      requestBody:
+        description: Datos del usuario a registrar
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '201':
+          description: Usuario registrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Petición inválida
+        '500':
+          description: Error en el servidor
+
+  /api/users/login:
+    post:
+      summary: Iniciar sesión
+      tags:
+        - Users
+      requestBody:
+        description: Credenciales de inicio de sesión
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  description: Correo del usuario
+                password:
+                  type: string
+                  description: Contraseña del usuario
+      responses:
+        '200':
+          description: Inicio de sesión exitoso
+        '401':
+          description: Credenciales incorrectas
+        '500':
+          description: Error en el servidor
+
+  /api/users/logout:
+    get:
+      summary: Cerrar sesión
+      tags:
+        - Users
+      responses:
+        '200':
+          description: Sesión cerrada
+        '500':
+          description: Error en el servidor
+
+  /api/users/github:
+    get:
+      summary: Iniciar sesión con GitHub
+      tags:
+        - Users
+      responses:
+        '200':
+          description: Redirigido a GitHub para autenticación
+        '500':
+          description: Error en el servidor
+
+  /api/users/githubcallback:
+    get:
+      summary: Callback de autenticación con GitHub
+      tags:
+        - Users
+      responses:
+        '200':
+          description: Autenticación con GitHub exitosa
+        '401':
+          description: Autenticación con GitHub fallida
+        '500':
+          description: Error en el servidor
+
+  /api/users/requestpasswordreset:
+    post:
+      summary: Solicitar restablecimiento de contraseña
+      tags:
+        - Users
+      requestBody:
+        description: Correo del usuario para solicitar el restablecimiento de contraseña
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  description: Correo del usuario
+      responses:
+        '200':
+          description: Solicitud de restablecimiento de contraseña enviada
+        '400':
+          description: Petición inválida
+        '500':
+          description: Error en el servidor
+
+  /api/users/reset-password:
+    post:
+      summary: Restablecer contraseña
+      tags:
+        - Users
+      requestBody:
+        description: Nueva contraseña y token de restablecimiento
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                  type: string
+                  description: Token de restablecimiento
+                newPassword:
+                  type: string
+                  description: Nueva contraseña
+      responses:
+        '200':
+          description: Contraseña restablecida
+        '400':
+          description: Petición inválida
+        '500':
+          description: Error en el servidor
+
+  /api/users/premium/{uid}:
+    put:
+      summary: Cambiar rol a premium
+      tags:
+        - Users
+      parameters:
+        - in: path
+          name: uid
+          schema:
+            type: string
+          required: true
+          description: ID del usuario
+      responses:
+        '200':
+          description: Rol cambiado a premium
+        '400':
+          description: Petición inválida
+        '404':
+          description: Usuario no encontrado
+        '500':
+          description: Error en el servidor
+
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        first_name:
+          type: string
+          description: Nombre del usuario
+        last_name:
+          type: string
+          description: Apellido del usuario
+        email:
+          type: string
+          description: Correo del usuario
+          unique: true
+        password:
+          type: string
+          description: Contraseña del usuario
+        age:
+          type: integer
+          description: Edad del usuario
+        cart:
+          type: string
+          description: ID del carrito asociado
+        role:
+          type: string
+          enum:
+            - admin
+            - user
+            - premium
+          description: Rol del usuario
+        resetToken:
+          type: object
+          properties:
+            token:
+              type: string
+              description: Token de restablecimiento de contraseña
+            expiresAt:
+              type: string
+              format: date-time
+              description: Fecha de expiración del token
+      example:
+        first_name: Juan
+        last_name: Pérez
+        email: juan.perez@example.com
+        password: password123
+        age: 30
+        cart: 60d21b4667d0d8992e610c85
+        role: user
+        resetToken:
+          token: abc123
+          expiresAt: 2022-12-31T23:59:59Z

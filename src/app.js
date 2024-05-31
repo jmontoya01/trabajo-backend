@@ -17,6 +17,10 @@ const compression = require("express-compression");
 const handleError = require("./middleware/error.js");
 const addLogger = require("./middleware/logger-middleware.js");
 const logger = require("./utils/logger.js");
+const swaggerOptions = require("./utils/swaggerOptions.js");
+const swaggerJSDoc = require("swagger-jsdoc");
+const swaggerUiExpress = require("swagger-ui-express");
+
 require("./database.js");
 
 //Middlewares
@@ -65,8 +69,9 @@ app.use("/api/users", userRouter);
 app.use("/", viewsRouter);
 app.use(handleError)
 
-
-
+//swagger
+const specs = swaggerJSDoc(swaggerOptions);
+app.use("/apidocs", swaggerUiExpress.serve, swaggerUiExpress.setup(specs));
 
 const hhtpServer = app.listen(port, () => {
     logger.http(`Escuchando en puerto: ${port}`);

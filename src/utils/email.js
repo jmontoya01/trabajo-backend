@@ -13,7 +13,7 @@ const transporter = nodemailer.createTransport({
 async function sendPurchaseEMail(email, first_name, ticket) {
     try {
         const mailOptions = {
-            from: "Test mail <jeffquetas@gmail.com>",
+            from: "SATURNO un mundo sin limites <jeffquetas@gmail.com>",
             to: email,
             subject: "Confirmación de compra",
             html: `
@@ -31,7 +31,7 @@ async function sendPurchaseEMail(email, first_name, ticket) {
 async function sendResetMail(email, first_name, token) {
     try {
         const mailOptions = {
-            from: "Test mail <jeffquetas@gmail.com>",
+            from: "SATURNO un mundo sin limites <jeffquetas@gmail.com>",
             to: email,
             subject: "Restablecimiento de contraseña",
             html:`
