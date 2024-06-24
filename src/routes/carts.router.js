@@ -5,7 +5,7 @@ const cartController = new CartController();
 const checkRole = require("../middleware/checkRole.js");
 
 
-router.use(checkRole(['user', 'premium']));
+// router.use(checkRole(['user', 'premium']));
 
 router.post("/", cartController.newCart);
 router.get("/:cid", cartController.getCartById);

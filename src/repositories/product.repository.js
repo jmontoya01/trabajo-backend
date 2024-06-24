@@ -35,7 +35,7 @@ class ProductRepository {
 
         } catch (error) {
             logger.error("Error al agregar producto", error);
-            throw new Error("Error al agregar un nuevo producto");
+            
         }
     }
 
@@ -80,7 +80,7 @@ class ProductRepository {
 
         } catch (error) {
             logger.error("Error al obtener los productos", error);
-            throw new Error("Error al obtener los productos");
+            res.status(400).send({message: "Error al obtener los productos"});
         }
     };
 
@@ -89,15 +89,13 @@ class ProductRepository {
             const product = await productModel.findById(id)
 
             if (!product) {
-                logger.warning("Producto no encontrado");
-                return 
+                return logger.warning("Producto encontrado");
             };
 
             logger.info("Producto encontrado con éxito!");
             return product;
         } catch (error) {
             logger.error("Error al buscar el producto con el id", error);
-            throw new Error("Error al buscar el producto por id");
         }
     };
 
@@ -105,13 +103,12 @@ class ProductRepository {
         try {
             const productUpdated = await productModel.findByIdAndUpdate(id, productUpdate);
             if (!productUpdated) {
-                logger.warning("No se encontro el producto");
+                return logger.warning("Producto encontrado");
             };
             logger.info("Producto actualizado con éxito!");
             return productUpdated;
         } catch (error) {
             logger.error("Error al actualizar el producto", error);
-            throw new Error("Error al actualizar el producto");
         };
     };
 
@@ -120,14 +117,13 @@ class ProductRepository {
             const deleted = await productModel.findByIdAndDelete(id);;
 
             if (!deleted) {
-                logger.warning("No se encuentra el producto con el id");
+                return logger.warning("No se encuentra el producto con el id");
             }
 
             logger.info("Producto eliminado con éxito!");
             return deleted;
         } catch (error) {
             logger.error("Error al eliminar el producto", error);
-            throw new Error("Error al eliminar el producto");
         };
     };
 };

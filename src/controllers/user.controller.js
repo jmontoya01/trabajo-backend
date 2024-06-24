@@ -64,12 +64,12 @@ class UserController {
                 }
             } else {
                 logger.warning("Usuario no encontrado")
-                response.responseError(res, 404, "Usuario no encontrado");
+                res.status(404).send({ message:"usuario no encontrado"});
             }
 
         } catch (error) {
             logger.error("Error en el login", error)
-            response.responseError(res, 400, "Error en el login");
+            res.status(400).send({ message:"Error en el login"});
         };
     };
 
@@ -92,7 +92,7 @@ class UserController {
             const user = await UserModel.findOne({ email });//buscamos el usuario en la base de datos
             if (!user) {
                 logger.warning("Usuario no encontrado");//validamos que si este
-                response.responseError(res, 400, "Usuario no encontrado")
+                return res.status(404).send({ message:"usuario no encontrado, ingrese un correo valido" });
             }
 
             const token = generateToken(); //creamos en utils funcion para generar token y la importamos
@@ -105,7 +105,7 @@ class UserController {
             res.redirect("/confirmationmail");
         } catch (error) {
             logger.error("Error al intentar restablecer la contraseña", error);
-            response.responseError(res, 400, "Error al intentar restablecer la contraseña");
+            res.status(400).send({ message:"Error al intentar restablecer la contraseña"});
         }
     };
 
@@ -140,7 +140,7 @@ class UserController {
 
         } catch (error) {
             logger.error("Error al intentar cambiar la contraseña", error);
-            response.responseError(res, 400, "Error al intentar cambiar la contraseña");
+            res.status(400).send({ message:"Error al intentar cambiar la contraseña"});
         }
     };
 
@@ -150,7 +150,7 @@ class UserController {
             const user = await UserModel.findById(uid);
 
             if (!user) {
-                response.responseError(res, 404, "Usuario no encontrado");
+                return res.status(404).send({ message:"Usuario no encontrado",});
             }
 
             const newRol = user.role === 'user' ? 'premium' : 'user';
@@ -158,7 +158,7 @@ class UserController {
             res.json(updateRol)
         } catch (error) {
             logger.error("Error al intentar cambiar el rol", error);
-            response.responseError(res, 400, "Error al intentar cambiar el rol");
+            res.status(400).send({ message:"Error al intentar restablecer la contraseña"});
         }
     }
 

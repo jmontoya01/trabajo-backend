@@ -2,12 +2,10 @@ const ProductRepository = require("../repositories/product.repository.js");
 const productRepository = new ProductRepository();
 const CartRepository = require("../repositories/cart.repository.js");
 const cartRepository = new CartRepository();
-const Response = require("../utils/reusables.js");
 const productModel = require("../models/product.model.js");
 const userDTO = require("../dto/user.dto.js");
 const cartModel = require("../models/cart.model.js");
 const generate = require("../utils/faker.js");
-const response = new Response();
 const logger = require("../utils/logger.js");
 
 
@@ -37,7 +35,7 @@ class ViewsController {
             res.render("profile", { user: userDto, isAdmin, isPremium});
         } catch (error) {
             logger.error("Error al obtener el usuario", error);
-            response.responseError(res, 500, "Error al obtener el usuario");
+            res.status(500).send({message: "Error al obtener el usuario "});
         };
     };
 
@@ -76,7 +74,7 @@ class ViewsController {
 
         } catch (error) {
             logger.error("Error al obtener los productos", error);
-            response.responseError(res, 500, "Error al obtener los productos")
+            res.status(500).send({message: "Error al obtener los productos "});
         }
     }
 
@@ -88,7 +86,7 @@ class ViewsController {
 
             if (!cart) {
                 logger.warning("No existe el carrito con el id ingresado");
-                return response.responseError(res, 404, "El recurso solicitado no se pudo encontrar");
+                return resstatus(404).send({message: "El recurso solicitado no se pudo encontrar"});
             };
 
             let totalPurchase = 0;
@@ -109,7 +107,7 @@ class ViewsController {
             res.render("carts", { products: productsInCart, totalPurchase, cartId, user: req.session.user });
         } catch (error) {
             logger.error("Error al obtener el carrito", error);
-            response.responseError(res, 500, "Error al obtener el carrito");
+            res.status(500).send({message: "Error al obtener el carrito "});
         };
     };
 
@@ -123,7 +121,7 @@ class ViewsController {
             res.render("realtimeproducts", {user: user, first_name: user.first_name, role: user.role, email: user.email});
         } catch (error) {
             logger.error("Error al obtener la ruta", error);
-            response.responseError(res, 500, "Error al intentar renderizar la ruta");
+            res.status(500).send({message: "Error al intentar renderizar la ruta "});
         };
     };
 
@@ -132,7 +130,7 @@ class ViewsController {
             res.render("chat");
         } catch (error) {
             logger.error("Error al obtener el chat", error);
-            response.responseError(res, 500, "Error al tratar de renderizar el chat");
+            res.status(500).send({message: "Error al tratar de renderizar el chat "});
         };
     };
 

@@ -11,8 +11,6 @@ const { sendPurchaseEMail } = require("../utils/email.js");
 const CustomError = require("../utils/errors/custom-error.js");
 const { errorCartId } = require("../utils/errors/info.js");
 const { Errors } = require("../utils/errors/enums.js");
-const Response = require("../utils/reusables.js");
-const response = new Response();
 const logger = require("../utils/logger.js");
 
 
@@ -21,10 +19,10 @@ class CartController {
         try {
             const newCart = await cartRepository.createCart();
             logger.info("Carrito creado correctamente");
-            return res.json(newCart);
+            return res.status(200).json(newCart);
         } catch (error) {
             logger.error("Error al crear el carrito", error);
-            response.responseError(res, 500, "Error interno del servidor");
+            res.status(500).send({message: "Error al crear el carrito"});
         };
     };
 
@@ -41,10 +39,10 @@ class CartController {
                 });
             }
             logger.info("carrito encontrado con éxito");
-            return res.json(cart.products)
+            return res.status(200).json(cart.products)
         } catch (error) {
             logger.error("Error al obtener el carrito", error);
-            response.responseError(res, 500, "Error al obtener el carrito");
+            res.status(500).send({message: "Error al obtener el carrito"});
         };
     };
 
@@ -52,27 +50,34 @@ class CartController {
         const cartId = req.params.cid;
         const productId = req.params.pid;
         const quantity = req.body.quantity || 1;
+        const userEmail = req.session.user.email;
 
         try {
             const cart = await cartModel.findOne({ _id: cartId })
             const product = await productModel.findOne({ _id: productId })
             if (!cart) {
-                response.responseMessage(res, 404, "Carrito no encontrado");
+                return res.status(404).send({message: "Carrito no encontrado"});
             }
             if (!product) {
-                response.responseMessage(res, 404, "Producto no encontrado");
+                return res.status(404).send({message: "Producto no encontrado"});
             }
-            if (product.owner === req.session.user.email) {
-                return response.responseMessage(res, 404, "No puedes agregar tus productos al carrito");
+            
+            const user = await userModel.findOne({email: userEmail});
+            if(user.role === 'premium'){
+                const product = await productRepository.getProductById(productId);
+
+                if (product.owner === user.email) {
+                    return res.status(403).send({error: "No puedes agregar un producto que tú mismo creaste"});
+                }
             }
             await cartRepository.addProductToCart(cart, product, quantity);
             const cartID = (req.session.user.cart).toString();
             res.redirect(`/carts/${cartID}`);
             logger.info("Producto agregado al carrito correctamente");
-            // res.json(productInCart)
+            return res.status(200)
         } catch (error) {
             logger.error("Error al agregar productos al carrito", error);
-            response.responseError(res, 500, "Error al agregar productos al carrito");
+            res.status(500).send({message: "Error al agregar productos al carrito"});
         };
     };
 
@@ -82,10 +87,10 @@ class CartController {
         try {
             const updateCart = await cartRepository.deleteProductFromCart(cartId, productId);
             logger.info("Producto eliminado del carrito con éxito");
-            res.json(updateCart);
+            res.status(200).json(updateCart);
         } catch (error) {
             logger.error("Error al eliminar un producto del carrito", error);
-            response.responseError(res, 500, "Error al eliminar un producto del carrito");
+            res.status(500).send({message: "Error al eliminar un producto del carrito"});
         };
     };
 
@@ -96,14 +101,14 @@ class CartController {
         try {
             const cart = await cartModel.findOne({ _id: cartId })
             if (!cart) {
-                response.responseMessage(res, 404, "Carrito no encontrado");
+                return res.status(404).send({message: "Carrito no encontrado"});
             }
             const updateCart = await cartRepository.updateProductsInCart(cart, updateProducts);
             logger.info("Producto actualizado con éxito");
-            res.json(updateCart);
+            res.status(200).json(updateCart)
         } catch (error) {
             logger.error("Error al actualizar los productos", error);
-            response.responseError(res, 500, "Error al actualizar los productos");
+            res.status(500).send({message: "Error al actualizar los productos"});
         };
     };
 
@@ -116,19 +121,19 @@ class CartController {
             const product = await productModel.findOne({ _id: productId })
             if (!cart) {
                 logger.warning("Carrito no encontrado");
-                response.responseMessage(res, 404, "Carrito no encontrado");
+                return res.status(404).send({message: "Carrito no encontrado"});
             }
             if (!product) {
                 logger.warning("Producto no encontrado");
-                response.responseMessage(res, 404, "Producto no encontrado");
+                return res.status(404).send({message: "Producto no encontradoo"});
             }
 
             const updateCart = await cartRepository.updateProductQuantity(cart, product, newQuantity);
             logger.info("Cantidad del producto actualizada correctamente");
             res.json(updateCart);
         } catch (error) {
-            logger.error("Error al actualizar la cantidad del producto");
-            response.responseError(res, 500, "Error al actualizar la cantidad del producto", error)
+            logger.error("Error al actualizar la cantidad del producto", error);
+            res.status(500).send({message: "Error al actualizar la cantidad del producto"});
         };
     };
 
@@ -138,14 +143,14 @@ class CartController {
             const cart = await cartModel.findOne({ _id: cartId })
             if (!cart) {
                 logger.warning("Carrito no encontrado");
-                response.responseMessage(res, 404, "Carrito no encontrado");
+                return res.status(404).send({message: "Carrito no encontrado"});
             }
             const updateCart = cartRepository.emptyCart(cart);
             logger.info("Carrito eliminado con éxito!");
             res.json(updateCart);
         } catch (error) {
-            logger.error("Error al vaciar el carrito");
-            response.responseError(res, 500, "Error al vaciar el carrito", error);
+            logger.error("Error al vaciar el carrito", error);
+            res.status(500).send({message: "Error al vaciar el carrito"});
         };
     };
 
@@ -186,7 +191,7 @@ class CartController {
 
         } catch (error) {
             logger.error("Error al finalizar la compra", error);
-            response.responseError(req, 500, "Error al procesar la compra");
+            res.status(500).send({message: "Error al procesar la compra"});
         }
     }
 

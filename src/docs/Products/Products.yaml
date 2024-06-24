@@ -143,9 +143,6 @@ components:
           items:
             type: string
           description: Imágenes del producto
-        owner:
-          type: string
-          description: Campo para validar productos creados por usuarios premium
       required:
         - title
         - description

@@ -4,9 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon src/app.js --mode development",
-    "start": "node src/app.js"
+    "start": "node src/app.js",
+    "test": "mocha test/supertest.test.cjs",
+    "testing": "nodemon src/app.js --mode test"
   },
   "keywords": [],
   "author": "",
@@ -35,5 +36,10 @@
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.0",
     "winston": "^3.13.0"
+  },
+  "devDependencies": {
+    "chai": "^5.1.1",
+    "mocha": "^10.4.0",
+    "supertest": "^7.0.0"
   }
 }

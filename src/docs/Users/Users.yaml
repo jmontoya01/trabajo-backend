@@ -205,7 +205,6 @@ components:
         email: juan.perez@example.com
         password: password123
         age: 30
-        cart: 60d21b4667d0d8992e610c85
         role: user
         resetToken:
           token: abc123

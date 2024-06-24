@@ -44,7 +44,6 @@ class CartRepository {
 
         } catch (error) {
             logger.error("Error al agregar un producto", error);
-            throw new Error("Error al agregar un producto");
         };
     };
 
@@ -52,14 +51,13 @@ class CartRepository {
         try {
             const cart = await cartModel.findById(cartId);
             if (!cart) {
-                throw new Error("Carrito no encontrado");
+                return logger.warning("Carrito no econtrado");
             }
             cart.products = cart.products.filter(item => item.product._id.toString() !== productId);//metodo filter comparamos los valores para que solo incluya aquellos productos cuyo _id no coincide con el productId 
             await cart.save();
             return cart;
         } catch (error) {
             logger.error("Error al eliminar el producto del carrito", error);
-            throw new Error("Error al eliminar el producto del carrito");
         };
     };
 
@@ -67,7 +65,7 @@ class CartRepository {
         try {
             const cart = await cartModel.findById(cartId);
             if (!cart) {
-                throw new Error("Carrito no encontrado")
+                return logger.error("Carrito no encontrado");
             }
 
             cart.products = updateProducts;
@@ -78,7 +76,6 @@ class CartRepository {
 
         } catch (error) {
             logger.error("Error al actualizar el carrito", error);
-            throw new Error("Error al actualizar el carrito");
         };
     };
 
@@ -86,21 +83,20 @@ class CartRepository {
         try {
             const cart = await cartModel.findById(cartId);
             if (!cart) {
-                throw new Error("Carrito no encontrado");
+                return logger.error("Carrito no encontrado");
             }
 
-            const productIndex = cart.products.findIndex(item => item.product._id.toString() === productId);
+            const productIndex = cart.products.findIndex(item => item.product.equals(productId));
             if (productIndex !== -1) {
                 cart.products[productIndex].quantity = newQuantity;
                 cart.markModified("products");
                 await cart.save();
                 return cart
             } else {
-                throw new Error("Producto no encontrado en el carrito");
+                logger.error("Producto no encontrado en el carrito");
             }
         } catch (error) {
             logger.error("Error al actualizar la cantidad del producto en el carrito", error);
-            throw new Error("Error al actualizar la cantidad del producto en el carrito");
         };
     };
 
@@ -108,12 +104,11 @@ class CartRepository {
         try {
             const cart = await cartModel.findByIdAndUpdate(cartId, { products: [] }, { new: true });
             if (!cart) {
-                throw new Error("Carrito no encontrado con el id")
+                return logger.error("No existe un carrito con ese id")
             };
             return cart;
         } catch (error) {
             logger.error("Error al vaciar el carrito en el gestor", error);
-            throw new Error("Error");
         };
     };
 };
