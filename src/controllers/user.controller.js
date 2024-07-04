@@ -7,7 +7,8 @@ const { credentialsMessage } = require("../utils/errors/info.js");
 const { Errors } = require("../utils/errors/enums.js");
 const logger = require("../utils/logger.js");
 const generateToken = require("../utils/resetToken.js");
-const { sendResetMail } = require("../utils/email.js")
+const { sendResetMail, sendInactiveUser } = require("../utils/email.js");
+const userModel = require("../models/user.model.js");
 
 
 
@@ -64,12 +65,12 @@ class UserController {
                 }
             } else {
                 logger.warning("Usuario no encontrado")
-                res.status(404).send({ message:"usuario no encontrado"});
+                res.status(404).send({ message: "usuario no encontrado" });
             }
 
         } catch (error) {
             logger.error("Error en el login", error)
-            res.status(400).send({ message:"Error en el login"});
+            res.status(400).send({ message: "Error en el login" });
         };
     };
 
@@ -92,7 +93,7 @@ class UserController {
             const user = await UserModel.findOne({ email });//buscamos el usuario en la base de datos
             if (!user) {
                 logger.warning("Usuario no encontrado");//validamos que si este
-                return res.status(404).send({ message:"usuario no encontrado, ingrese un correo valido" });
+                return res.status(404).send({ message: "usuario no encontrado, ingrese un correo valido" });
             }
 
             const token = generateToken(); //creamos en utils funcion para generar token y la importamos
@@ -105,7 +106,7 @@ class UserController {
             res.redirect("/confirmationmail");
         } catch (error) {
             logger.error("Error al intentar restablecer la contraseña", error);
-            res.status(400).send({ message:"Error al intentar restablecer la contraseña"});
+            res.status(400).send({ message: "Error al intentar restablecer la contraseña" });
         }
     };
 
@@ -140,7 +141,7 @@ class UserController {
 
         } catch (error) {
             logger.error("Error al intentar cambiar la contraseña", error);
-            res.status(400).send({ message:"Error al intentar cambiar la contraseña"});
+            res.status(400).send({ message: "Error al intentar cambiar la contraseña" });
         }
     };
 
@@ -150,7 +151,7 @@ class UserController {
             const user = await UserModel.findById(uid);
 
             if (!user) {
-                return res.status(404).send({ message:"Usuario no encontrado",});
+                return res.status(404).send({ message: "Usuario no encontrado", });
             }
 
             const newRol = user.role === 'user' ? 'premium' : 'user';
@@ -158,11 +159,45 @@ class UserController {
             res.json(updateRol)
         } catch (error) {
             logger.error("Error al intentar cambiar el rol", error);
-            res.status(400).send({ message:"Error al intentar restablecer la contraseña"});
+            res.status(400).send({ message: "Error al intentar restablecer la contraseña" });
+        }
+    };
+
+    async getAllUsers(req, res) {
+        try {
+            const users = await UserModel.find();
+            const newArray = users.map(user => {
+                const { _id, ...rest } = user.toObject();
+                return { id: _id, ...rest };
+            });
+
+            res.render("users", { users: newArray, user: req.session.user });
+        } catch (error) {
+            res.status(500).json({ error: 'Error al obtener los usuarios' });
+        }
+    };
+
+    async deleteInactiveUsers (req, res) {
+        try {
+            // const twoDaysAgo = new Date(Date.now() - 2 * 24 * 60 * 60 * 1000);//2 días
+            const twoDaysAgo = new Date(Date.now() - 1 * 60 * 1000);
+            const inactiveUsers = await UserModel.find({ lastLogin: { $lt: twoDaysAgo } });
+    
+            // Envía correos y elimina usuarios inactivos
+            for (const user of inactiveUsers) {
+                try {
+                    await sendInactiveUser(user.email, user.first_name, user.last_name);
+                    await userModel.deleteOne({ _id: user._id });
+                } catch (error) {
+                    console.error(`Error al enviar el correo electrónico a ${user.email}:`, emailError);
+                }
+            }
+    
+            res.status(200).json({ status: "success", message: 'Usuarios inactivos eliminados y correos enviados' });
+        } catch (error) {
+            res.status(500).json({ error: 'Error al eliminar usuarios inactivos' });
         }
     }
-
-
 };
 
 module.exports = UserController;

@@ -15,6 +15,8 @@ router.get("/githubcallback", passport.authenticate("github", {failureRedirect: 
 router.post("/requestpasswordreset", userController.requestpasswordreset);
 router.post("/reset-password", userController.resetpassword);
 router.put("/premium/:uid", userController.changeRolPremium);
+router.get('/', userController.getAllUsers);
+router.delete('/inactive', userController.deleteInactiveUsers);
 
 
 module.exports = router;
