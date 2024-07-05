@@ -134,6 +134,18 @@ nav ul {
     line-height: 1;
 }
 
+.card__users{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    width: 300px;
+    padding: 10px;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.3);
+    border-radius: 8px;
+    gap: 10px;
+    margin: 10px;
+}
+
 .card_realtime {
     display: flex;
     flex-direction: column;

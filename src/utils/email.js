@@ -69,4 +69,23 @@ async function sendInactiveUser(email, first_name, last_name) {
     }
 };
 
-module.exports = { sendPurchaseEMail, sendResetMail, sendInactiveUser };
+async function sendPremiumSoldProduct(owner) {
+    try {
+        const mailOptions = {
+            from: process.env.EMAIL_USER,
+            to: owner.email,
+            subject: "Producto vendido",
+            html:  `
+            <h1>Producto vendido</h1>
+            <p>Hola ${owner.first_name},</p>
+            <p>Tu producto "${product.title}" ha sido vendido.</p>
+            <p>Gracias por usar nuestro servicio.</p>
+        `
+        };
+        await transporter.sendMail(mailOptions)
+    } catch (error) {
+        logger.error("Error al enviar el correo electrónico: ", error);
+    }
+};
+
+module.exports = { sendPurchaseEMail, sendResetMail, sendInactiveUser, sendPremiumSoldProduct};

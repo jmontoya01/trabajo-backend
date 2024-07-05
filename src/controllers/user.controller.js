@@ -50,7 +50,7 @@ class UserController {
                         cart: user.cart
                     };
                     if (user.role === "admin") {
-                        res.redirect("/admin");
+                        res.redirect("/api/users/admin");
                     } else {
                         res.redirect("/login");
                     }
@@ -145,23 +145,6 @@ class UserController {
         }
     };
 
-    async changeRolPremium(req, res) {
-        try {
-            const { uid } = req.params;
-            const user = await UserModel.findById(uid);
-
-            if (!user) {
-                return res.status(404).send({ message: "Usuario no encontrado", });
-            }
-
-            const newRol = user.role === 'user' ? 'premium' : 'user';
-            const updateRol = await UserModel.findByIdAndUpdate(uid, { role: newRol }, { new: true });
-            res.json(updateRol)
-        } catch (error) {
-            logger.error("Error al intentar cambiar el rol", error);
-            res.status(400).send({ message: "Error al intentar restablecer la contraseña" });
-        }
-    };
 
     async getAllUsers(req, res) {
         try {
@@ -177,22 +160,54 @@ class UserController {
         }
     };
 
-    async deleteInactiveUsers (req, res) {
+    async admin(req, res) {
+        const isAdmin = req.session.role === "admin"
+        const isPremium = req.session.role === 'premium';
+        const users = await UserModel.find();
+        const newArray = users.map(user => {
+            const { _id, ...rest } = user.toObject();
+            return { id: _id, ...rest };
+        });
+        res.render("admin", { users: newArray, user: req.session.user }, isAdmin, isPremium);
+    }
+
+    async updateRole(req, res) {
+        const { id } = req.params;
+        const { role } = req.body;
+        try {
+            await userModel.findByIdAndUpdate(id, { role });
+            res.redirect('/api/users/admin');
+        } catch (error) {
+            res.status(500).send('Error al actualizar el rol');
+        }
+    };
+
+    async deleteUser(req, res) {
+        const { id } = req.params;
+        try {
+            await userModel.findByIdAndDelete(id);
+            res.redirect('/api/users/admin');
+        } catch (error) {
+            res.status(500).send('Error al eliminar el usuario');
+        }
+    };
+
+    async deleteInactiveUsers(req, res) {
         try {
             // const twoDaysAgo = new Date(Date.now() - 2 * 24 * 60 * 60 * 1000);//2 días
             const twoDaysAgo = new Date(Date.now() - 1 * 60 * 1000);
             const inactiveUsers = await UserModel.find({ lastLogin: { $lt: twoDaysAgo } });
-    
+
             // Envía correos y elimina usuarios inactivos
             for (const user of inactiveUsers) {
                 try {
                     await sendInactiveUser(user.email, user.first_name, user.last_name);
                     await userModel.deleteOne({ _id: user._id });
                 } catch (error) {
-                    console.error(`Error al enviar el correo electrónico a ${user.email}:`, emailError);
+                    console.error(`Error al enviar el correo electrónico a ${user.email}:`, error);
                 }
             }
-    
+
             res.status(200).json({ status: "success", message: 'Usuarios inactivos eliminados y correos enviados' });
         } catch (error) {
             res.status(500).json({ error: 'Error al eliminar usuarios inactivos' });

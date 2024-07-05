@@ -4,7 +4,39 @@
     <p>Nombre: {{user.first_name}}</p>
     <p>usuario: {{user.role}}</p>
 
+    <form action="/api/users/inactive" method="post" class="btn">
+        <button type="submit">eliminar usuarios inactivos</button>
+    </form>
+
     <a href="/realtimeproducts" class="btn">Modificar Productos</a>
     <a href="/mockingproducts" class="btn">Generar productos</a>
     <a href="/api/users/logout" class="btn">Logout</a>
-</div>
+
+    <h2>Usuarios registrados</h2>
+
+    <div class="products__containter">
+        {{#each users}}
+        <div class="card__users">
+            <h3>Nombre: {{first_name}}</h3>
+            <p class="card-p">Apellio: {{last_name}} </p>
+            <p class="card-p">Email: {{email}}</p>
+            <p class="card-p">Rol: {{role}} </p>
+            <form action="/api/users/delete/{{id}}" method="POST">
+                <button class="btn" type="submit">Eliminar usuario</button>
+            </form>
+
+            <form action="/api/users/update-role/{{id}}" method="POST">
+                <div>
+                    <label for="role">Selecciona el nuevo rol:</label>
+                    <select id="role" name="role">
+                        <option value="user" {{#eq user.role 'admin'}}selected{{/eq}}>User</option>
+                        <option value="premium" {{#eq user.role "premium"}}selected{{/eq}}>Premium</option>
+                        <option value="admin" {{#eq user.role "admin"}}selected{{/eq}}>Admin</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn">Actualizar Rol</button>
+            </form>
+
+        </div>
+        {{/each}}
+    </div>

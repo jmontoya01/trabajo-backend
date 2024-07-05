@@ -5,6 +5,7 @@ const CustomError = require("../utils/errors/custom-error.js");
 const { productNotFoundMessage } = require("../utils/errors/info.js");
 const { Errors } = require("../utils/errors/enums.js");
 const logger = require("../utils/logger.js");
+const { sendPremiumSoldProduct } = require("../utils/email.js");
 const { error } = require("winston");
 
 class ProductController {
@@ -20,9 +21,9 @@ class ProductController {
             res.status(200).json(products);
         } catch (error) {
             logger.error("Error al obtener los productos", error);
-            res.status(500).send({message: "Error al obtener los productos"});
+            res.status(500).send({ message: "Error al obtener los productos" });
         };
-        
+
     };
 
     async getProductById(req, res) {
@@ -41,7 +42,7 @@ class ProductController {
 
         } catch (error) {
             logger.error("Error al obtener el producto con el id: ", error);
-            res.status(500).send({message: "Error al obtener el producto con el id"});
+            res.status(500).send({ message: "Error al obtener el producto con el id" });
         };
     };
 
@@ -51,13 +52,13 @@ class ProductController {
             const result = await productRepository.addProduct(newProduct);
             if (!result) {
                 logger.warning("Error al agregar el producto");
-                return res.status(400).send({message: "Error al agregar el producto"});
+                return res.status(400).send({ message: "Error al agregar el producto" });
             }
             logger.info("Producto agregado exitosamente");
             res.status(201).json(result);
         } catch (error) {
             logger.error("Error al agregar el producto", error);
-            res.status(500).send({message: "Error al agregar el producto"});
+            res.status(500).send({ message: "Error al agregar el producto" });
         };
     };
 
@@ -65,35 +66,43 @@ class ProductController {
         const productId = req.params.pid;
         const updateProduct = req.body;
         try {
-            const product = await productModel.findOne({_id:productId});
+            const product = await productModel.findOne({ _id: productId });
             if (!product) {
                 logger.warning("Producto no encontrado");
-                return res.status(404).send({error: "Producto no encontrado"});
+                return res.status(404).send({ error: "Producto no encontrado" });
             }
             const productUpdate = await productRepository.updateProduct(product, updateProduct);
             logger.info("Producto actualizado con éxito");
             res.status(200).send(productUpdate);
         } catch (error) {
             logger.error("Error al actualizar el producto con el id", error);
-            res.status(400).send({message: "No existe producto con ese id, por favor ingrese un id valido"});
+            res.status(400).send({ message: "No existe producto con ese id, por favor ingrese un id valido" });
         };
     };
 
     async deleteProduct(req, res) {
         const productId = req.params.pid;
         try {
-            const product = await productModel.findOne({_id:productId});
+            const product = await productModel.findOne({ _id: productId });
             if (!product) {
                 logger.warning("Producto no encontrado");
-                return res.status(404).send({error: "Producto no encontrado"});
+                return res.status(404).send({ error: "Producto no encontrado" });
             }
+
+            // Obtener el usuario dueño del producto
+            const owner = await userModel.findOne({ email: product.owner });
+            if (owner && owner.role === 'premium') {
+                // Enviar correo al usuario premium
+                await sendPremiumSoldProduct(owner)
+            }
+
             let productDelete = await productRepository.deleteProduct(product);
             if (productDelete) {
-                res.status(200).send({message: "La solicitud ha tenido éxito y se ha eliminado el recurso como resultado"});
+                res.status(200).send({ message: "La solicitud ha tenido éxito y se ha eliminado el recurso como resultado" });
             }
         } catch (error) {
             logger.error("Error al eliminar el producto", error);
-            res.status(404).send({message: "No existe un producto con ese ID, por favor envíe un ID válido"});
+            res.status(404).send({ message: "No existe un producto con ese ID, por favor envíe un ID válido" });
         };
     }
 };

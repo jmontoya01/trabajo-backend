@@ -4,24 +4,9 @@
         <div class="profile-role">{{user.email}}</div>
         <div class="profile-role">{{user.role}}</div>
     </div>
-    {{!-- {{#eq user.role 'admin'}}
-    <a href="/admin" class="btn">admin</a>
-    <a href="/api/users/logout" class="btn">Logout</a>
-    {{else}}
-    {{#eq user.role 'premium'}}
-    <a href="/realtimeproducts" class="btn">panel Premium</a>
-    <a href="/chat" class="btn">Chat</a>
-    <a href="/products" class="btn">Tienda</a>
-    <a href="/api/users/logout" class="btn">Logout</a>
-    {{/eq}} --}}
-    {{!-- {{#eq user.role 'premium'}}
-    <a href="/chat" class="btn">Chat</a>
-    <a href="/products" class="btn">Tienda</a>
-    <a href="/api/users/logout" class="btn">Logout</a>
-    {{/eq}} --}}
 
     {{#eq user.role 'admin'}}
-    <a href="/admin" class="btn">admin</a>
+    <a href="/api/users/admin" class="btn">admin</a>
     <a href="/api/users/logout" class="btn">Logout</a>
     {{else}}
     {{#eq user.role 'user'}}

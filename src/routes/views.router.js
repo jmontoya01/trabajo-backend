@@ -13,7 +13,6 @@ router.get("/carts/:cid", viewsController.renderCarts);
 router.get("/", viewsController.renderIndex);
 router.get("/realtimeproducts", checkRole(["admin", "premium"]), viewsController.renderRealtimeproducts);
 router.get("/chat", checkRole(["user, premium"]), viewsController.renderChat);
-router.get("/admin", checkRole(['admin']), viewsController.admin)
 router.get("/checkout/:coid", checkRole(["user", "premium"]), viewsController.checkout)
 router.get("/mockingproducts", checkRole(['admin']), viewsController.mockingproducts);
 router.get("/loggertest", viewsController.testLogger);

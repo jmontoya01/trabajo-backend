@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const UserController = require("../controllers/user.controller.js");
 const userController = new UserController();
+const checkRole = require("../middleware/checkRole.js");
 const passport = require("passport");
 
 
@@ -14,9 +15,11 @@ router.get("/github", passport.authenticate("github", {scope:["user:email"]}), a
 router.get("/githubcallback", passport.authenticate("github", {failureRedirect: "/login"}), userController.githubcallback);
 router.post("/requestpasswordreset", userController.requestpasswordreset);
 router.post("/reset-password", userController.resetpassword);
-router.put("/premium/:uid", userController.changeRolPremium);
 router.get('/', userController.getAllUsers);
-router.delete('/inactive', userController.deleteInactiveUsers);
+router.post('/inactive', userController.deleteInactiveUsers);
+router.get("/admin", checkRole(['admin']), userController.admin);
+router.post("/update-role/:id", userController.updateRole);
+router.post("/delete/:id", userController.deleteUser);
 
 
 module.exports = router;
