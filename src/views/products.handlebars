@@ -3,7 +3,16 @@
     <a href="/carts/{{cartId}}" class="carritodecompras"> 
         <i class="bi bi-cart-check-fill"></i>
     </a>
+</div>
 
+<div class="container__login">
+    {{#if hasNextPage}}
+    <a href="/products?page={{nextPage}}" class="btnNextPrevius"> Siguiente </a>
+    {{/if}}
+    {{#if hasPrevPage}}
+    <a href="/products?page={{prevPage}}" class="btnNextPrevius"> Anterior </a>
+    {{/if}}
+    <p class="paragrap">Pagina {{currentPage}} de {{totalPages}} </p>
 </div>
 
 <div class="products__containter">

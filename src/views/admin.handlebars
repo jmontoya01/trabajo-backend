@@ -14,29 +14,32 @@
 
     <h2>Usuarios registrados</h2>
 
-    <div class="products__containter">
+    <div class="card-usercontainer">
         {{#each users}}
-        <div class="card__users">
-            <h3>Nombre: {{first_name}}</h3>
-            <p class="card-p">Apellio: {{last_name}} </p>
-            <p class="card-p">Email: {{email}}</p>
-            <p class="card-p">Rol: {{role}} </p>
-            <form action="/api/users/delete/{{id}}" method="POST">
-                <button class="btn" type="submit">Eliminar usuario</button>
-            </form>
-
-            <form action="/api/users/update-role/{{id}}" method="POST">
-                <div>
-                    <label for="role">Selecciona el nuevo rol:</label>
-                    <select id="role" name="role">
-                        <option value="user" {{#eq user.role 'admin'}}selected{{/eq}}>User</option>
-                        <option value="premium" {{#eq user.role "premium"}}selected{{/eq}}>Premium</option>
-                        <option value="admin" {{#eq user.role "admin"}}selected{{/eq}}>Admin</option>
-                    </select>
-                </div>
-                <button type="submit" class="btn">Actualizar Rol</button>
-            </form>
-
+        <div class="user-card">
+            <div class="card-header">{{first_name}}</div>
+            <div class="card-body">
+                <p><strong>Nombre:</strong> {{first_name}}</p>
+                <p><strong>Apellio:</strong> {{last_name}}</p>
+                <p><strong>Email:</strong> {{email}}</p>
+                <p><strong>Rol:</strong> {{role}}</p>
+            </div>
+            <div class="card-footer">
+                <form action="/api/users/delete/{{id}}" method="POST">
+                    <button class="btn" type="submit">Eliminar usuario</button>
+                </form>
+                <form action="/api/users/update-role/{{id}}" method="POST">
+                    <div>
+                        <label for="role">Selecciona el nuevo rol:</label>
+                        <select id="role" name="role">
+                            <option value="user" {{#eq user.role 'admin' }}selected{{/eq}}>User</option>
+                            <option value="premium" {{#eq user.role "premium" }}selected{{/eq}}>Premium</option>
+                            <option value="admin" {{#eq user.role "admin" }}selected{{/eq}}>Admin</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn">Actualizar Rol</button>
+                </form>
+            </div>
         </div>
         {{/each}}
     </div>

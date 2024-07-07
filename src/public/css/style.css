@@ -133,8 +133,8 @@ nav ul {
     overflow: unset;
     line-height: 1;
 }
-
-.card__users{
+/* /////////////////////////////////////////// */
+/* .card__users{
     display: flex;
     flex-direction: column;
     justify-content: space-around;
@@ -144,7 +144,65 @@ nav ul {
     border-radius: 8px;
     gap: 10px;
     margin: 10px;
+} */
+
+/* Estilo para el contenedor de la tarjeta */
+.card-usercontainer {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    margin: 20px;
 }
+
+/* Estilo para la tarjeta */
+.user-card {
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin: 10px;
+    width: 300px;
+    transition: transform 0.2s;
+}
+
+.user-card:hover {
+    transform: translateY(-10px);
+}
+
+.card-header {
+    background: #4a90e2;
+    color: #fff;
+    border-radius: 10px 10px 0 0;
+    padding: 20px;
+    text-align: center;
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
+.card-body {
+    padding: 20px;
+}
+
+.card-body p {
+    margin: 10px 0;
+    color: #333;
+}
+
+.card-footer {
+    padding: 10px;
+    text-align: center;
+}
+
+.card-footer .role {
+    background: #4a90e2;
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 0.9em;
+    display: inline-block;
+}
+
+
+/* ////////////////////////////////////////////////////// */
 
 .card_realtime {
     display: flex;
