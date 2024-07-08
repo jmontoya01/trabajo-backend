@@ -15,13 +15,16 @@ const renderProducts = (products) => {
 
     products.docs.forEach(item => {
         const card = document.createElement("div");
-        card.classList.add("card_realtime");//voy en buscar como renderizar todos los productos en realtimeproducts
 
         card.innerHTML = `
-                <p class="card-p"> ID: ${item._id} </p>
-                <p class="card-p">Titulo: ${item.title} </p>
-                <p class="card-p">Precio: ${item.price} </p>
-                <button class="btn"> Eliminar Producto </button>
+                <div class="user-card">
+                    <p class="card-header">Titulo: ${item.title} </p>
+                    <div class="card-body">
+                        <p> <strong>ID:</strong> ${item._id} </p>
+                        <p> <strong>Precio:</strong> ${item.price} </p>
+                        <button class="btn"> Eliminar Producto </button>
+                    </div>
+                </div>
         `;
         containerProducts.appendChild(card);
         card.querySelector("button").addEventListener("click", () => {

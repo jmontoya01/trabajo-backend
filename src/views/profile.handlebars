@@ -1,28 +1,36 @@
-<div class="profile-card">
-    <div class="profile-info">
-        <div class="profile-name">{{user.name}} {{user.lastName}}</div>
-        <div class="profile-role">{{user.email}}</div>
-        <div class="profile-role">{{user.role}}</div>
+<div class="user-panel">
+    {{!-- <div class="header"></div> --}}
+    <div class="navbar">
+        <h1>Panel de usuario</h1>
+        <div>
+            {{#eq user.role 'admin'}}
+            <a href="/api/users/admin" class="btn">admin</a>
+            <a href="/api/users/logout" class="btn">Logout</a>
+            {{else}}
+            {{#eq user.role 'user'}}
+            <a href="/chat" class="btn">Chat</a>
+            <a href="/products" class="btn">Tienda</a>
+            <a href="/api/users/logout" class="btn">Logout</a>
+            {{else}}
+            {{#eq user.role 'premium'}}
+            <a href="/realtimeproducts" class="btn">panel Premium</a>
+            <a href="/chat" class="btn">Chat</a>
+            <a href="/products" class="btn">Tienda</a>
+            <a href="/api/users/logout" class="btn">Logout</a>
+            {{else}}
+            <p>Porfavor loguearse</p>
+            {{/eq}}
+            {{/eq}}
+            {{/eq}}
+        </div>
     </div>
 
-    {{#eq user.role 'admin'}}
-    <a href="/api/users/admin" class="btn">admin</a>
-    <a href="/api/users/logout" class="btn">Logout</a>
-    {{else}}
-    {{#eq user.role 'user'}}
-    <a href="/chat" class="btn">Chat</a>
-    <a href="/products" class="btn">Tienda</a>
-    <a href="/api/users/logout" class="btn">Logout</a>
-    {{else}}
-    {{#eq user.role 'premium'}}
-    <a href="/realtimeproducts" class="btn">panel Premium</a>
-    <a href="/chat" class="btn">Chat</a>
-    <a href="/products" class="btn">Tienda</a>
-    <a href="/api/users/logout" class="btn">Logout</a>
-    {{else}}
-    <p>Porfavor loguearse</p>
-    {{/eq}}
-    {{/eq}}
-    {{/eq}}
+    <div class="main-content">
+        <div class="user-info">
+            <h2>{{user.name}} {{user.lastName}}</h2>
+            <p class="profile-role"><strong>Email: </strong>{{user.email}}</p>
+            <p class="profile-role"><strong>Rol: </strong>{{user.role}}</p>
+        </div>
 
+    </div>
 </div>
